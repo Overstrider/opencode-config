@@ -43,6 +43,23 @@ permissões de plugins e ferramentas futuras também sejam liberadas.
 Este modo permite comandos destrutivos, acesso fora do projeto e leitura de
 arquivos como `.env` sem confirmação.
 
+## 9Router local
+
+O único provedor habilitado é `9router`, usando o endpoint OpenAI-compatible
+`http://127.0.0.1:20128/v1`.
+
+Modelos visíveis:
+
+- Opus 5 — modelo principal
+- Sonnet 5
+- Fable 5
+- GPT Sol
+- Kimi K3
+- Haiku — modelo leve para títulos e tarefas auxiliares
+
+Os IDs e limites foram obtidos diretamente de `/v1/models`. Nenhuma chave ou
+credencial do 9router é armazenada neste repositório.
+
 ## Instalação em uma nova máquina
 
 ### Windows
