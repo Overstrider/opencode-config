@@ -49,9 +49,15 @@ $alreadyLinked = $false
 if (Test-Path -LiteralPath $targetConfig) {
     $targetItem = Get-Item -Force -LiteralPath $targetConfig
     if ($targetItem.LinkType) {
-        $resolvedTarget = [IO.Path]::GetFullPath(
-            (Join-Path $targetItem.Parent.FullName $targetItem.Target)
-        )
+        $linkTarget = [string]$targetItem.Target[0]
+        if ([IO.Path]::IsPathRooted($linkTarget)) {
+            $resolvedTarget = [IO.Path]::GetFullPath($linkTarget)
+        }
+        else {
+            $resolvedTarget = [IO.Path]::GetFullPath(
+                (Join-Path $targetItem.Parent.FullName $linkTarget)
+            )
+        }
         $alreadyLinked = $resolvedTarget -eq [IO.Path]::GetFullPath($sourceConfig)
     }
 
