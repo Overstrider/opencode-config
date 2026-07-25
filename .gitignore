@@ -1,0 +1,30 @@
+# Dependencies and generated files
+config/node_modules/
+config/.cache/
+config/.tmp/
+
+# Machine-local overrides
+*.local.json
+*.local.jsonc
+mise.local.toml
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+config/auth.json
+config/credentials.json
+config/secrets.json
+config/secrets.jsonc
+
+# OpenCode runtime data belongs in ~/.local/share/opencode
+config/log/
+config/project/
+config/storage/
+
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.tmp

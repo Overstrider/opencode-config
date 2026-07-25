@@ -1,0 +1,11 @@
+[tools]
+node = "24.9.0"
+"github:anomalyco/opencode" = "1.18.5"
+
+[tasks.install]
+description = "Instala dependências e liga a configuração global"
+run = "./install.sh"
+
+[tasks.update]
+description = "Atualiza repositório, dependências e OpenCode"
+run = "./update.sh"
