@@ -43,6 +43,88 @@ permissões de plugins e ferramentas futuras também sejam liberadas.
 Este modo permite comandos destrutivos, acesso fora do projeto e leitura de
 arquivos como `.env` sem confirmação.
 
+## Caveman Ultra obrigatório
+
+O Caveman de [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman)
+está instalado globalmente no OpenCode e travado em `ultra`.
+
+A trava possui três camadas:
+
+1. `config/AGENTS.md` torna Ultra obrigatório em toda sessão.
+2. O plugin grava `ultra` ao carregar, criar sessão, receber cada prompt e
+   montar cada system prompt.
+3. `CAVEMAN_DEFAULT_MODE=ultra` é persistido no ambiente do usuário pelos
+   scripts Windows.
+
+Comandos ou prompts como `/caveman off`, `/caveman lite`, `stop caveman` e
+`normal mode` são ignorados. Configurações locais de projeto também não podem
+rebaixar o modo. A clareza de avisos de segurança e ações irreversíveis continua
+obrigatória, sem alterar o estado Ultra.
+
+## Ponytail Ultra obrigatório
+
+O Ponytail de
+[DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) está
+instalado como dependência pinada e travado globalmente no nível máximo
+oficial, `ultra`.
+
+O wrapper `config/plugins/ponytail-lock.mjs` preserva skills e comandos
+oficiais, mas regrava `ultra` ao carregar o plugin, criar sessão, receber
+prompt e montar o system prompt. `PONYTAIL_DEFAULT_MODE=ultra` também é
+persistido no ambiente do usuário. Comandos e regras locais tentando usar
+`off`, `lite`, `full`, `review` ou `normal mode` são ignorados.
+
+Ponytail governa a implementação (YAGNI, reuso e menor mudança correta);
+Caveman governa a concisão da resposta. Nenhum deles reduz validação,
+segurança, prevenção de perda de dados ou requisitos explicitamente mantidos.
+
+## Graphify como mapa oficial da codebase
+
+O [Graphify](https://github.com/Graphify-Labs/graphify) está instalado no
+nível do usuário pela distribuição oficial `graphifyy`, pinada em
+`.graphify-version`. A skill global fica em `config/skills/graphify/`.
+
+Regras globais e o plugin `config/plugins/graphify.js` tornam o fluxo
+query-first obrigatório para exploração não trivial:
+
+- `graphify query "<pergunta>"` antes de grep/leitura ampla;
+- `graphify path "<A>" "<B>"` para relações;
+- `graphify explain "<conceito>"` para contexto focalizado;
+- `graphify update .` depois de mudanças quando já existe `graphify-out/`.
+
+Cada projeto mantém seu próprio `graphify-out/`; bancos, relatórios e índices
+de codebase não entram neste repositório de configuração global.
+
+## Memória global com claude-mem
+
+O [claude-mem](https://github.com/thedotmack/claude-mem) está pinado em
+`.claude-mem-version`. O plugin oficial captura ferramentas e mensagens do
+OpenCode e expõe `claude_mem_search`.
+
+`config/plugins/claude-mem-autostart.mjs` inicia o worker ao abrir o OpenCode e
+injeta contexto recente do projeto em cada system prompt. O compressor usa o
+Haiku local do 9router pela API Anthropic.
+
+Banco SQLite, Chroma, logs, PID, configurações e o arquivo local de gateway
+ficam em `~/.claude-mem/`, fora deste Git. Memória é contexto histórico:
+estado atual da codebase e instruções atuais sempre vencem conteúdo antigo.
+
+## MCP estrutural sempre ativo
+
+O
+[codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)
+está pinado em `.codebase-memory-mcp-version`, registrado globalmente como
+MCP local com `enabled: true` e iniciado automaticamente pelo OpenCode.
+
+`auto_index=true` e `auto_watch=true` fazem projetos novos serem indexados na
+primeira conexão e mantêm índices existentes atualizados. Dados, bancos e logs
+ficam em `~/.cache/codebase-memory-mcp/`, fora do Git.
+
+Graphify continua sendo o mapa amplo/narrativo oficial. O MCP fornece consultas
+estruturais rápidas (`search_graph`, `trace_path`, `get_code_snippet`,
+`check_index_coverage`, `query_graph`, `get_architecture`). Para decisões
+arquiteturais, os dois índices devem ser reconciliados com o código atual.
+
 ## 9Router local
 
 Somente os provedores locais do 9router estão habilitados, todos usando

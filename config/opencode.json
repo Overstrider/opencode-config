@@ -336,5 +336,21 @@
     "skill": "allow",
     "plan_enter": "allow",
     "plan_exit": "allow"
-  }
+  },
+  "mcp": {
+    "codebase-memory-mcp": {
+      "type": "local",
+      "command": [
+        "codebase-memory-mcp"
+      ],
+      "enabled": true
+    }
+  },
+  "plugin": [
+    "./plugins/caveman/plugin.js",
+    "./plugins/ponytail-lock.mjs",
+    "./plugins/graphify.js",
+    "./plugins/claude-mem.js",
+    "./plugins/claude-mem-autostart.mjs"
+  ]
 }

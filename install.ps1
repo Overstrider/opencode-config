@@ -23,6 +23,18 @@ $bypassPermission = Get-Content -Raw -LiteralPath $bypassPermissionFile |
     [EnvironmentVariableTarget]::User
 )
 $env:OPENCODE_PERMISSION = $bypassPermission
+[Environment]::SetEnvironmentVariable(
+    "CAVEMAN_DEFAULT_MODE",
+    "ultra",
+    [EnvironmentVariableTarget]::User
+)
+$env:CAVEMAN_DEFAULT_MODE = "ultra"
+[Environment]::SetEnvironmentVariable(
+    "PONYTAIL_DEFAULT_MODE",
+    "ultra",
+    [EnvironmentVariableTarget]::User
+)
+$env:PONYTAIL_DEFAULT_MODE = "ultra"
 
 if (-not $SkipOpenCodeInstall) {
     if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
@@ -93,6 +105,8 @@ if (-not $alreadyLinked) {
     }
 }
 
+& (Join-Path $repositoryRoot "setup-integrations.ps1")
+
 $openCodeCommand = (Get-Command opencode.cmd -ErrorAction Stop).Source
 $desktopPath = [Environment]::GetFolderPath("Desktop")
 $shortcutPath = Join-Path $desktopPath "OpenCode Administrador.lnk"
@@ -117,4 +131,6 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "OpenCode $openCodeVersion configurado com sucesso."
 Write-Host "Modo BYPASS persistente ativado com OPENCODE_PERMISSION e --auto."
+Write-Host "Caveman Ultra global e permanente ativado."
+Write-Host "Ponytail Ultra global e permanente ativado."
 Write-Host "Credenciais continuam fora do Git. Execute: opencode auth login"

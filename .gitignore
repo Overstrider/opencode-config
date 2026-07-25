@@ -2,6 +2,11 @@
 config/node_modules/
 config/.cache/
 config/.tmp/
+config/.caveman-active
+config/.caveman-active.*
+config/.ponytail-active
+config/.ponytail-active.*
+config/opencode.json.bak
 
 # Machine-local overrides
 *.local.json

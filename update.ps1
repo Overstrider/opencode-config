@@ -24,6 +24,18 @@ $bypassPermission = Get-Content -Raw -LiteralPath $bypassPermissionFile |
     [EnvironmentVariableTarget]::User
 )
 $env:OPENCODE_PERMISSION = $bypassPermission
+[Environment]::SetEnvironmentVariable(
+    "CAVEMAN_DEFAULT_MODE",
+    "ultra",
+    [EnvironmentVariableTarget]::User
+)
+$env:CAVEMAN_DEFAULT_MODE = "ultra"
+[Environment]::SetEnvironmentVariable(
+    "PONYTAIL_DEFAULT_MODE",
+    "ultra",
+    [EnvironmentVariableTarget]::User
+)
+$env:PONYTAIL_DEFAULT_MODE = "ultra"
 
 npm install --global "opencode-ai@$openCodeVersion"
 if ($LASTEXITCODE -ne 0) {
@@ -48,6 +60,8 @@ else {
         throw "Falha ao restaurar dependências com npm."
     }
 }
+
+& (Join-Path $repositoryRoot "setup-integrations.ps1")
 
 opencode debug config | Out-Null
 if ($LASTEXITCODE -ne 0) {

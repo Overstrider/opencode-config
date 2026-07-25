@@ -13,6 +13,8 @@ fi
 
 bypass_permission="$(node -e 'const fs=require("fs"); process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(process.argv[1],"utf8"))))' "${repository_root}/bypass-permissions.json")"
 export OPENCODE_PERMISSION="${bypass_permission}"
+export CAVEMAN_DEFAULT_MODE="ultra"
+export PONYTAIL_DEFAULT_MODE="ultra"
 
 npm install --global "opencode-ai@${opencode_version}"
 
@@ -37,6 +39,8 @@ else
   ln -s -- "${source_config}" "${target_config}"
   echo "Link criado: ${target_config} -> ${source_config}"
 fi
+
+bash "${repository_root}/setup-integrations.sh"
 
 opencode debug config >/dev/null
 echo "OpenCode ${opencode_version} configurado com sucesso."
