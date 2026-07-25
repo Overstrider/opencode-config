@@ -45,20 +45,30 @@ arquivos como `.env` sem confirmação.
 
 ## 9Router local
 
-O único provedor habilitado é `9router`, usando o endpoint OpenAI-compatible
-`http://127.0.0.1:20128/v1`.
+Somente os provedores locais do 9router estão habilitados, todos usando
+`http://127.0.0.1:20128/v1`. Cada família usa seu transporte nativo para que o
+9router não converta níveis de esforço:
+
+- Claude usa `@ai-sdk/anthropic` e `/v1/messages`.
+- GPT Sol usa `@ai-sdk/openai` e `/v1/responses`.
+- Kimi usa `@ai-sdk/openai-compatible` e `/v1/chat/completions`.
 
 Modelos visíveis:
 
-- Opus 5 — modelo principal
-- Sonnet 5
-- Fable 5
-- GPT Sol
-- Kimi K3
-- Haiku — modelo leve para títulos e tarefas auxiliares
+- Opus 5 — `low`, `medium`, `high`, `xhigh`, `max`
+- Sonnet 5 — `low`, `medium`, `high`, `xhigh`, `max`
+- Fable 5 — `low`, `medium`, `high`, `xhigh`, `max`
+- GPT Sol — `low`, `medium`, `high`, `xhigh`, `max`
+- Kimi K3 — `low`, `medium`, `high`, `max`
+- Haiku — `high` e `max` por orçamento nativo de thinking
 
-Os IDs e limites foram obtidos diretamente de `/v1/models`. Nenhuma chave ou
-credencial do 9router é armazenada neste repositório.
+Use `Ctrl+T` na TUI para alternar a variante do modelo atual. No Haiku, `high`
+usa 16.000 tokens de thinking e `max` usa 31.999; esses nomes não são enviados
+como níveis de effort.
+
+Os IDs e limites foram obtidos diretamente de `/v1/models`. O valor
+`sk_9router` presente na configuração é apenas o placeholder exigido pelos
+adapters para acessar o serviço local sem autenticação; não é uma credencial.
 
 ## Instalação em uma nova máquina
 
