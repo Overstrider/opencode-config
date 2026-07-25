@@ -13,6 +13,7 @@ imediatamente no Git.
 - agentes, comandos, skills, plugins, tools e temas
 - dependências e versões de plugins em `package.json` e `bun.lock`
 - versão do OpenCode em `.opencode-version` e `mise.toml`
+- política BYPASS reproduzível em `bypass-permissions.json`
 - scripts de instalação e atualização
 
 ## O que nunca entra no Git
@@ -23,6 +24,24 @@ Credenciais, tokens, logs, sessões e dados de projetos ficam em
 
 Não coloque chaves diretamente em `opencode.json`. Use `opencode auth login`,
 variáveis de ambiente ou um arquivo local ignorado pelo Git.
+
+## Modo BYPASS / YOLO
+
+Esta configuração combina três camadas para evitar solicitações de aprovação:
+
+1. Todas as permissões conhecidas estão explicitamente definidas como `allow`
+   em `config/opencode.json`, incluindo `external_directory`, leitura, shell,
+   edição e `doom_loop`.
+2. No Windows, `install.ps1` persiste `OPENCODE_PERMISSION` no ambiente do
+   usuário. Essa sobrescrita é carregada depois das configurações de projeto.
+3. O atalho `OpenCode Administrador` inicia a TUI com `--auto`, aprovando
+   automaticamente qualquer solicitação residual que não esteja negada.
+
+`bypass-permissions.json` inclui um wildcard final adicional para que
+permissões de plugins e ferramentas futuras também sejam liberadas.
+
+Este modo permite comandos destrutivos, acesso fora do projeto e leitura de
+arquivos como `.env` sem confirmação.
 
 ## Instalação em uma nova máquina
 

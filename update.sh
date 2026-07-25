@@ -4,6 +4,8 @@ set -euo pipefail
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source_config="${repository_root}/config"
 opencode_version="$(tr -d '[:space:]' < "${repository_root}/.opencode-version")"
+bypass_permission="$(node -e 'const fs=require("fs"); process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(process.argv[1],"utf8"))))' "${repository_root}/bypass-permissions.json")"
+export OPENCODE_PERMISSION="${bypass_permission}"
 
 git -C "${repository_root}" pull --ff-only
 npm install --global "opencode-ai@${opencode_version}"
@@ -15,4 +17,4 @@ else
 fi
 
 opencode debug config >/dev/null
-echo "OpenCode ${opencode_version} e configuração atualizados."
+echo "OpenCode ${opencode_version}, configuração e modo BYPASS atualizados."

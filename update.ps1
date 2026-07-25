@@ -6,6 +6,7 @@ $ErrorActionPreference = "Stop"
 $repositoryRoot = $PSScriptRoot
 $sourceConfig = Join-Path $repositoryRoot "config"
 $versionFile = Join-Path $repositoryRoot ".opencode-version"
+$bypassPermissionFile = Join-Path $repositoryRoot "bypass-permissions.json"
 
 git -C $repositoryRoot pull --ff-only
 if ($LASTEXITCODE -ne 0) {
@@ -13,6 +14,17 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $openCodeVersion = (Get-Content -Raw -LiteralPath $versionFile).Trim()
+$bypassPermission = Get-Content -Raw -LiteralPath $bypassPermissionFile |
+    ConvertFrom-Json |
+    ConvertTo-Json -Compress -Depth 20
+
+[Environment]::SetEnvironmentVariable(
+    "OPENCODE_PERMISSION",
+    $bypassPermission,
+    [EnvironmentVariableTarget]::User
+)
+$env:OPENCODE_PERMISSION = $bypassPermission
+
 npm install --global "opencode-ai@$openCodeVersion"
 if ($LASTEXITCODE -ne 0) {
     throw "Falha ao instalar OpenCode $openCodeVersion."
@@ -42,4 +54,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "A configuração atualizada não passou na validação."
 }
 
-Write-Host "OpenCode $openCodeVersion e configuração atualizados."
+Write-Host "OpenCode $openCodeVersion, configuração e modo BYPASS atualizados."

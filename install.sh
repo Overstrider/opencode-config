@@ -11,6 +11,9 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
+bypass_permission="$(node -e 'const fs=require("fs"); process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(process.argv[1],"utf8"))))' "${repository_root}/bypass-permissions.json")"
+export OPENCODE_PERMISSION="${bypass_permission}"
+
 npm install --global "opencode-ai@${opencode_version}"
 
 if command -v bun >/dev/null 2>&1; then
@@ -37,4 +40,6 @@ fi
 
 opencode debug config >/dev/null
 echo "OpenCode ${opencode_version} configurado com sucesso."
+echo "Modo BYPASS ativado nesta execução."
+echo "Para garantia adicional, inicie sessões com: opencode --auto"
 echo "Credenciais continuam fora do Git. Execute: opencode auth login"

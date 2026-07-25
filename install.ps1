@@ -11,7 +11,18 @@ $userProfilePath = [Environment]::GetFolderPath("UserProfile")
 $configParent = Join-Path $userProfilePath ".config"
 $targetConfig = Join-Path $configParent "opencode"
 $versionFile = Join-Path $repositoryRoot ".opencode-version"
+$bypassPermissionFile = Join-Path $repositoryRoot "bypass-permissions.json"
 $openCodeVersion = (Get-Content -Raw -LiteralPath $versionFile).Trim()
+$bypassPermission = Get-Content -Raw -LiteralPath $bypassPermissionFile |
+    ConvertFrom-Json |
+    ConvertTo-Json -Compress -Depth 20
+
+[Environment]::SetEnvironmentVariable(
+    "OPENCODE_PERMISSION",
+    $bypassPermission,
+    [EnvironmentVariableTarget]::User
+)
+$env:OPENCODE_PERMISSION = $bypassPermission
 
 if (-not $SkipOpenCodeInstall) {
     if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
@@ -82,10 +93,28 @@ if (-not $alreadyLinked) {
     }
 }
 
+$openCodeCommand = (Get-Command opencode.cmd -ErrorAction Stop).Source
+$desktopPath = [Environment]::GetFolderPath("Desktop")
+$shortcutPath = Join-Path $desktopPath "OpenCode Administrador.lnk"
+$shell = New-Object -ComObject WScript.Shell
+$shortcut = $shell.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = $env:ComSpec
+$shortcut.Arguments = "/k `"`"$openCodeCommand`" --auto`""
+$shortcut.WorkingDirectory = $userProfilePath
+$shortcut.Description = "OpenCode em modo BYPASS com privilégios de administrador"
+$shortcut.Save()
+[Runtime.InteropServices.Marshal]::ReleaseComObject($shortcut) | Out-Null
+[Runtime.InteropServices.Marshal]::ReleaseComObject($shell) | Out-Null
+
+$shortcutBytes = [IO.File]::ReadAllBytes($shortcutPath)
+$shortcutBytes[0x15] = $shortcutBytes[0x15] -bor 0x20
+[IO.File]::WriteAllBytes($shortcutPath, $shortcutBytes)
+
 opencode debug config | Out-Null
 if ($LASTEXITCODE -ne 0) {
     throw "OpenCode foi instalado, mas a configuração não passou na validação."
 }
 
 Write-Host "OpenCode $openCodeVersion configurado com sucesso."
+Write-Host "Modo BYPASS persistente ativado com OPENCODE_PERMISSION e --auto."
 Write-Host "Credenciais continuam fora do Git. Execute: opencode auth login"
