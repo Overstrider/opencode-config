@@ -117,12 +117,29 @@ else {
     $claudeMemSettings = [pscustomobject]@{}
 }
 
+$claudeMemProfile = "openrouter-qwen36"
+$claudeMemModel = "qwen/qwen3.6-35b-a3b"
+
 $claudeMemSettings | Add-Member -Force NoteProperty `
-    "CLAUDE_MEM_PROVIDER" "claude"
+    "CLAUDE_MEM_PROVIDER" "openrouter"
 $claudeMemSettings | Add-Member -Force NoteProperty `
-    "CLAUDE_MEM_CLAUDE_AUTH_METHOD" "gateway"
+    "CLAUDE_MEM_OPENROUTER_MODEL" $claudeMemModel
 $claudeMemSettings | Add-Member -Force NoteProperty `
-    "CLAUDE_MEM_MODEL" "cc/claude-haiku-4-5-20251001"
+    "CLAUDE_MEM_MODEL_PROFILE" $claudeMemProfile
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_MODEL" $claudeMemModel
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_MAX_CONCURRENT_AGENTS" "1"
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_TIER_ROUTING_ENABLED" "false"
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_TIER_SIMPLE_MODEL" $claudeMemModel
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_TIER_SUMMARY_MODEL" $claudeMemModel
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_TIER_FAST_MODEL" $claudeMemModel
+$claudeMemSettings | Add-Member -Force NoteProperty `
+    "CLAUDE_MEM_TIER_SMART_MODEL" $claudeMemModel
 $claudeMemSettings | Add-Member -Force NoteProperty `
     "CLAUDE_MEM_WORKER_HOST" "127.0.0.1"
 $claudeMemSettings | Add-Member -Force NoteProperty `
@@ -138,30 +155,28 @@ $settingsJson = $claudeMemSettings |
     [Text.UTF8Encoding]::new($false)
 )
 
-$envLines = [Collections.Generic.List[string]]::new()
-if (Test-Path -LiteralPath $claudeMemEnvPath) {
-    foreach ($line in [IO.File]::ReadAllLines($claudeMemEnvPath)) {
-        if ($line -notmatch "^(ANTHROPIC_BASE_URL|ANTHROPIC_AUTH_TOKEN)=") {
-            $envLines.Add($line)
-        }
-    }
+$openRouterApiKey = $env:OPENROUTER_API_KEY
+if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
+    $openRouterApiKey = [Environment]::GetEnvironmentVariable(
+        "OPENROUTER_API_KEY",
+        [EnvironmentVariableTarget]::User
+    )
 }
-if ($envLines.Count -gt 0 -and $envLines[$envLines.Count - 1] -ne "") {
-    $envLines.Add("")
+if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
+    throw "OPENROUTER_API_KEY não foi encontrada; claude-mem não pode usar OpenRouter."
 }
-$envLines.Add("# Local 9router gateway for claude-mem. This file stays outside Git.")
-$envLines.Add("ANTHROPIC_BASE_URL=http://127.0.0.1:20128")
-$envLines.Add("ANTHROPIC_AUTH_TOKEN=sk_9router")
-[IO.File]::WriteAllLines(
-    $claudeMemEnvPath,
-    $envLines,
-    [Text.UTF8Encoding]::new($false)
-)
+$env:OPENROUTER_API_KEY = $openRouterApiKey
+node (
+    Join-Path $repositoryRoot "scripts\configure-claude-mem-env.mjs"
+) $claudeMemDataDir
+if ($LASTEXITCODE -ne 0) {
+    throw "Falha ao configurar credencial OpenRouter do claude-mem."
+}
 
 $workerScript = Join-Path $claudeMemPluginRoot "scripts\worker-service.cjs"
-bun $workerScript start | Out-Null
+bun $workerScript restart | Out-Null
 if ($LASTEXITCODE -ne 0) {
-    throw "Falha ao iniciar worker do claude-mem $claudeMemVersion."
+    throw "Falha ao reiniciar worker do claude-mem $claudeMemVersion."
 }
 
 Write-Host "Graphify $graphifyVersion instalado."

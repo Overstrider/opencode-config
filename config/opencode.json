@@ -6,7 +6,7 @@
     "9router-kimi"
   ],
   "model": "9router-claude/cc/claude-opus-5",
-  "small_model": "9router-claude/cc/claude-haiku-4-5-20251001",
+  "small_model": "9router-sol/cx/gpt-5.6-luna",
   "provider": {
     "9router-claude": {
       "npm": "@ai-sdk/anthropic",
@@ -274,6 +274,66 @@
               ]
             }
           }
+        },
+        "cx/gpt-5.6-luna": {
+          "name": "GPT Luna",
+          "options": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "limit": {
+            "context": 372000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "include": [
+                "reasoning.encrypted_content"
+              ]
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "include": [
+                "reasoning.encrypted_content"
+              ]
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "auto",
+              "include": [
+                "reasoning.encrypted_content"
+              ]
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh",
+              "reasoningSummary": "auto",
+              "include": [
+                "reasoning.encrypted_content"
+              ]
+            },
+            "max": {
+              "reasoningEffort": "max",
+              "reasoningSummary": "auto",
+              "include": [
+                "reasoning.encrypted_content"
+              ]
+            }
+          }
         }
       }
     },
@@ -284,6 +344,33 @@
         "baseURL": "http://127.0.0.1:20128/v1"
       },
       "models": {
+        "kimi/kimi-k2.6": {
+          "name": "Kimi K2.6",
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        },
         "kimi/kimi-k3": {
           "name": "Kimi K3",
           "limit": {
@@ -347,10 +434,14 @@
     }
   },
   "plugin": [
+    "./plugins/9router-autostart.mjs",
+    "./plugins/9router-model-guard.mjs",
     "./plugins/caveman/plugin.js",
     "./plugins/ponytail-lock.mjs",
     "./plugins/graphify.js",
-    "./plugins/claude-mem.js",
-    "./plugins/claude-mem-autostart.mjs"
+    "./plugins/claude-mem-wrapper.mjs",
+    "./plugins/claude-mem-autostart.mjs",
+    "./plugins/project-docs-hook.mjs",
+    "./plugins/prompt-enhancer-hook.mjs"
   ]
 }

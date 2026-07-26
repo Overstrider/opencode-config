@@ -29,7 +29,9 @@ let startAttempted = false;
 function workerEndpoint() {
   let settings = {};
   try {
-    settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    settings = JSON.parse(
+      fs.readFileSync(settingsPath, 'utf8').replace(/^\uFEFF/, ''),
+    );
   } catch {}
 
   const host = process.env.CLAUDE_MEM_WORKER_HOST ||

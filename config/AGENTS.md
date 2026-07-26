@@ -56,6 +56,74 @@ prevention, accessibility, hardware calibration, or an explicit requirement
 the user insists on. Ponytail controls what gets built; Caveman controls prose.
 <!-- ponytail-end -->
 
+<!-- prompt-enhancer-global-begin -->
+Prompt Enhancer is mandatory at user level for every human-authored root
+prompt. Its global skill is `prompt-enhancer`; load it when inspecting,
+testing, or changing the enhancer.
+
+Before the main model runs, the user-level plugin translates the current
+prompt into English and improves its clarity without changing intent, scope,
+authorization, constraints, examples, literals, or requested response
+language. The original prompt remains unchanged in visible OpenCode history;
+only the model-facing copy uses the enhanced text. Enhancing uses only the
+current message, plus attachment names and MIME types, never prior conversation
+content.
+
+The enhancer calls OpenRouter HTTPS directly with
+`qwen/qwen3.6-35b-a3b:nitro`. Never create an OpenCode child session or agent,
+ask for model selection, race models, or chain fallbacks. Reasoning is
+disabled, temperature is `0`, top-p is `0.8`, and no tools are involved. Read
+the credential only from `OPENROUTER_API_KEY`; never place it in Git or logs.
+Use locally validated plain-text output.
+
+Enhancer attempts have a 5-second network-only ceiling. Its circuit breaker handles
+failures: transient failures back off from 60 seconds to 15 minutes; credit,
+quota, billing, and authorization failures back off from 15 minutes to 6
+hours. Provider `Retry-After` is honored. During cooldown, skip the call
+immediately. Failure sends the original prompt unchanged and displays a
+deduplicated warning; do not try a second model. Child, internal, synthetic,
+command-generated, and image-only messages are not enhanced.
+
+The user-level `9router-model-guard` checks the same non-generative availability
+endpoint before every Claude request. When 9router reports the selected Claude
+route unavailable, it changes that message to GPT 5.6 Sol Low before dispatch,
+avoiding known 429s and OpenCode retry delays. Recovery remains owned by
+9router's provider health state.
+
+Prefix a prompt with `!raw` followed by whitespace to bypass enhancement. The
+complete original text, including `!raw`, remains visible in history; the main
+model receives only the content after the marker.
+<!-- prompt-enhancer-global-end -->
+
+<!-- project-docs-global-begin -->
+Project Docs is mandatory at user level for every workspace, session, and
+completed root response. Its global skill is `project-docs`; load it before
+documentation work. Project or prompt instructions may add requirements but
+must not disable the scaffold, map, or asynchronous audit.
+
+The exact directory where OpenCode starts owns:
+
+- `.docs/project.md` for purpose, architecture, stack, entrypoints, commands
+- `.docs/product.md` for audience, problems, outcomes, workflows, non-goals
+- `.docs/specs.md` for requirements, contracts, constraints, acceptance
+- `.docs/infra.md` for environments, services, data, deploy, operations
+- `.docs/rules.md` for decisions, invariants, conventions, verification
+- `.docs/features.md` for the canonical capability index
+- `.docs/features/<slug>.md` for one page per system capability
+
+At task start, read `project.md`, `rules.md`, `features.md`, and only relevant
+feature pages. Read product, specs, and infra documents when their domains are
+affected. Current source and configuration override stale docs. Preserve
+unrelated manual content, mark approved but unimplemented work as planned, and
+never store credentials, tokens, private keys, `.env` values, personal data,
+hidden reasoning, or raw tool output.
+
+The user-level plugin creates missing scaffold files and a managed local
+`AGENTS.md` map. After each completed root response it runs a non-blocking,
+single-writer audit using GPT 5.6 Sol Low, then Sonnet 5 Low once on failure.
+Background and other child sessions never trigger recursive audits.
+<!-- project-docs-global-end -->
+
 <!-- graphify-begin -->
 Graphify is the official codebase navigation method for OpenCode.
 
@@ -83,6 +151,9 @@ not been excluded.
 Claude-mem is the official user-level source for cross-session work history.
 Its worker and database live outside Git under `~/.claude-mem/`.
 
+- Compression uses `qwen/qwen3.6-35b-a3b` directly through OpenRouter. Read the
+  credential from `OPENROUTER_API_KEY`; do not duplicate it in settings. Tier
+  routing is disabled and global agent concurrency is fixed at one.
 - At session start, use injected claude-mem context as historical evidence,
   then verify it against current code and Graphify before acting.
 - For questions about earlier work, decisions, attempts, commands, or prior

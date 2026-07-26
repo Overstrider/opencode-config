@@ -1,0 +1,39 @@
+# Project Rules
+
+Documentation status: `verified`
+
+Last verified: 2026-07-26
+
+## Decisions and invariants
+
+- Current source overrides stale documentation or memory.
+- Graphify is the broad codebase navigation layer.
+- codebase-memory-mcp is the fast structural query layer.
+- claude-mem is historical evidence, not current truth.
+- Prompt Enhancer changes only model-facing text; visible history remains
+  original.
+- Caveman Ultra and Ponytail Ultra are mandatory global policies.
+- BYPASS permissions are deliberate and security-sensitive.
+
+## Development conventions
+
+- Preserve pinned versions and lockfiles.
+- Reuse shared helpers under `config/lib/`.
+- Keep plugins small and fail open when an auxiliary service is unavailable.
+- Preserve unrelated user changes.
+- Keep README and `.docs/` aligned with runtime behavior.
+
+## Safety and security
+
+- Never stage `.env`, auth, runtime databases, logs, generated graphs, or keys.
+- Never embed `OPENROUTER_API_KEY` in configuration or documentation.
+- Treat BYPASS mode as capable of destructive, unrestricted operations.
+- Validate exact filesystem targets before destructive installer maintenance.
+
+## Verification
+
+- Run focused Node tests for changed components.
+- Run the complete test suite before publishing.
+- Run `opencode debug config`.
+- Run `git diff --check`.
+- Update an existing Graphify index after code changes.

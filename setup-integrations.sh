@@ -38,42 +38,35 @@ const path = require('path');
 
 const dataDir = process.argv[2];
 const settingsPath = path.join(dataDir, 'settings.json');
-const envPath = path.join(dataDir, '.env');
 fs.mkdirSync(dataDir, { recursive: true });
 
 let settings = {};
 try {
   settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 } catch {}
+const profile = 'openrouter-qwen36';
+const model = 'qwen/qwen3.6-35b-a3b';
 Object.assign(settings, {
-  CLAUDE_MEM_PROVIDER: 'claude',
-  CLAUDE_MEM_CLAUDE_AUTH_METHOD: 'gateway',
-  CLAUDE_MEM_MODEL: 'cc/claude-haiku-4-5-20251001',
+  CLAUDE_MEM_PROVIDER: 'openrouter',
+  CLAUDE_MEM_OPENROUTER_MODEL: model,
+  CLAUDE_MEM_MODEL_PROFILE: profile,
+  CLAUDE_MEM_MODEL: model,
+  CLAUDE_MEM_MAX_CONCURRENT_AGENTS: '1',
+  CLAUDE_MEM_TIER_ROUTING_ENABLED: 'false',
+  CLAUDE_MEM_TIER_SIMPLE_MODEL: model,
+  CLAUDE_MEM_TIER_SUMMARY_MODEL: model,
+  CLAUDE_MEM_TIER_FAST_MODEL: model,
+  CLAUDE_MEM_TIER_SMART_MODEL: model,
   CLAUDE_MEM_WORKER_HOST: '127.0.0.1',
   CLAUDE_MEM_WORKER_PORT: '37778',
   CLAUDE_MEM_DATA_DIR: dataDir,
 });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
-
-let lines = [];
-try {
-  lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
-} catch {}
-lines = lines.filter(
-  (line) => !/^(ANTHROPIC_BASE_URL|ANTHROPIC_AUTH_TOKEN)=/.test(line),
-);
-while (lines.at(-1) === '') lines.pop();
-if (lines.length) lines.push('');
-lines.push(
-  '# Local 9router gateway for claude-mem. This file stays outside Git.',
-  'ANTHROPIC_BASE_URL=http://127.0.0.1:20128',
-  'ANTHROPIC_AUTH_TOKEN=sk_9router',
-  '',
-);
-fs.writeFileSync(envPath, lines.join('\n'), { mode: 0o600 });
 NODE
 
-bun "${claude_mem_plugin_root}/scripts/worker-service.cjs" start >/dev/null
+node "${repository_root}/scripts/configure-claude-mem-env.mjs" \
+  "${claude_mem_data_dir}"
+bun "${claude_mem_plugin_root}/scripts/worker-service.cjs" restart >/dev/null
 
 echo "Graphify ${graphify_version} installed."
 echo "claude-mem ${claude_mem_version} configured and started."

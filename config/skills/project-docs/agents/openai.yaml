@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Docs"
+  short_description: "Maintain living project documentation"
+  default_prompt: "Use $project-docs to audit and update this project's living documentation."

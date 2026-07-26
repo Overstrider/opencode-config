@@ -1,0 +1,6 @@
+interface:
+  display_name: "Prompt Enhancer"
+  short_description: "Translate and strengthen prompts without intent loss"
+  default_prompt: "Use $prompt-enhancer to rewrite this request as a faithful, stronger English prompt."
+policy:
+  allow_implicit_invocation: true
