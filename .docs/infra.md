@@ -16,7 +16,7 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 | --- | --- | --- |
 | 9Router | `127.0.0.1:20128` | External MerlinRouter checkout |
 | claude-mem worker | `127.0.0.1:37778`, `~/.claude-mem/` | Local integration |
-| codebase-memory-mcp | `~/.cache/codebase-memory-mcp/` | Local MCP |
+| codebase-memory-mcp | project-confined process; `~/.cache/codebase-memory-mcp/` | Local MCP |
 | OpenCode | `~/.local/share/opencode/` | OpenCode runtime |
 | Graphify | `<project>/graphify-out/` | Per-project generated data |
 
@@ -40,6 +40,10 @@ documented.
 - Existing unrelated global config is backed up with a timestamp.
 - Worker restart is owned by the setup scripts; plugin autostart handles later
   availability loss.
+- Each codebase-memory-mcp launcher resolves the current project root, sets
+  `CBM_ALLOWED_ROOT`, rejects unsafe or unmarked roots before starting the
+  upstream binary, and filters out-of-root indexing requests at the MCP
+  protocol boundary.
 
 ## Observability
 

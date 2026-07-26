@@ -9,6 +9,8 @@ Last verified: 2026-07-26
 - Current source overrides stale documentation or memory.
 - Graphify is the broad codebase navigation layer.
 - codebase-memory-mcp is the fast structural query layer.
+- Every codebase-memory-mcp process is confined to its OpenCode session's
+  detected safe project root; machine-wide roots are rejected.
 - claude-mem is historical evidence, not current truth.
 - Prompt Enhancer changes only model-facing text; visible history remains
   original.

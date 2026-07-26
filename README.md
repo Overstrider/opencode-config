@@ -290,8 +290,13 @@ está pinado em `.codebase-memory-mcp-version`, registrado globalmente como
 MCP local com `enabled: true` e iniciado automaticamente pelo OpenCode.
 
 `auto_index=true` e `auto_watch=true` fazem projetos novos serem indexados na
-primeira conexão e mantêm índices existentes atualizados. Dados, bancos e logs
-ficam em `~/.cache/codebase-memory-mcp/`, fora do Git.
+primeira conexão e mantêm índices existentes atualizados. O launcher confina
+cada processo MCP à raiz do projeto da respectiva sessão por
+`CBM_ALLOWED_ROOT` e também bloqueia no protocolo MCP qualquer
+`index_repository` fora dessa raiz. Ele recusa home, `AppData`, diretórios
+temporários, caches, raízes de disco e pastas sem um marcador de projeto,
+evitando que uma sessão aberta fora de um projeto varra o computador inteiro.
+Dados, bancos e logs ficam em `~/.cache/codebase-memory-mcp/`, fora do Git.
 
 Graphify continua sendo o mapa amplo/narrativo oficial. O MCP fornece consultas
 estruturais rápidas (`search_graph`, `trace_path`, `get_code_snippet`,

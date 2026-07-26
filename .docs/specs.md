@@ -26,6 +26,9 @@ Last verified: 2026-07-26
 - The built-in Plan agent uses `openai/gpt-oss-20b` through the isolated
   OpenRouter provider.
 - claude-mem uses `127.0.0.1:37778`.
+- codebase-memory-mcp sets `CBM_ALLOWED_ROOT` to the detected project root and
+  independently filters MCP indexing calls outside it. It refuses home,
+  AppData, temporary, cache, filesystem-root, and unmarked roots.
 - Prompt enhancement has a five-second network ceiling and fails open.
 - Claude model availability checks fail open when 9Router health state cannot
   be read.

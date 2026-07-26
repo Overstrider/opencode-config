@@ -194,4 +194,7 @@ codebase-memory-mcp is the always-on fast structural MCP backend. Use both when
 architecture or cross-file relationships matter, reconcile disagreements
 against current source, and never claim either index is complete without
 coverage/freshness evidence.
+Each MCP process is confined to the current session's detected project root.
+Never index the user home, AppData, temporary directories, caches, filesystem
+roots, or a directory without a recognized project marker.
 <!-- codebase-memory-mcp-end -->
