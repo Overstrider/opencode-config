@@ -21,7 +21,8 @@ behavior and integrations across projects and machines.
 
 - One versioned source controls the active global OpenCode configuration.
 - Install and update scripts restore pinned tools and integrations.
-- Primary models route through 9Router; auxiliary Qwen calls use OpenRouter.
+- Primary build models route through 9Router; Plan and memory use GPT-OSS 20B
+  through OpenRouter while prompt enhancement uses Qwen.
 - Memory, structural indexing, graph navigation, and documentation auditing
   are available in every project.
 

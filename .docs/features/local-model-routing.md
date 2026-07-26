@@ -7,22 +7,26 @@ Last verified: 2026-07-26
 ## Summary
 
 OpenCode routes Claude, GPT, and Kimi models through local 9Router transports.
+The built-in Plan agent uses GPT-OSS 20B through OpenRouter.
 
 ## Behavior
 
 Claude uses the Anthropic adapter, GPT uses OpenAI Responses, and Kimi uses
 OpenAI-compatible chat completions. A guard avoids known-unavailable Claude
-routes by selecting GPT Luna Low.
+routes by selecting GPT Luna Low. Plan uses the isolated
+`openrouter-oss/openai/gpt-oss-20b` provider with temperature zero.
 
 ## Requirements and invariants
 
-9Router must answer on `127.0.0.1:20128`. Native effort and thinking settings
-must remain provider-specific.
+9Router must answer on `127.0.0.1:20128`. Plan additionally requires
+`OPENROUTER_API_KEY`. Native effort and thinking settings must remain
+provider-specific.
 
 ## Architecture and data flow
 
-OpenCode provider -> native SDK adapter -> 9Router -> upstream account.
-Availability guard reads the authenticated local availability endpoint.
+Primary OpenCode provider -> native SDK adapter -> 9Router -> upstream
+account. Plan -> OpenAI-compatible adapter -> OpenRouter -> GPT-OSS 20B.
+Availability guard reads the authenticated local 9Router endpoint.
 
 ## Interfaces and data
 

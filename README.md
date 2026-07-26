@@ -12,6 +12,7 @@ imediatamente no Git.
 | --- | --- | --- |
 | OpenCode `1.18.5` | TUI e runtime principal | Node.js/npm |
 | 9Router | Gateway local para Claude, GPT e Kimi | Serviço em `127.0.0.1:20128` |
+| GPT-OSS 20B | Modelo do agente Plan e compressor de memória | `OPENROUTER_API_KEY` e internet |
 | Prompt Enhancer | Melhora prompts via Qwen antes do modelo principal | `OPENROUTER_API_KEY` e internet |
 | claude-mem `13.12.4` | Memória entre sessões | Bun, OpenRouter e worker em `127.0.0.1:37778` |
 | Graphify `0.9.26` | Grafo navegável de cada codebase | `uv` e runtime Python |
@@ -31,8 +32,8 @@ Versões ficam pinadas em `.opencode-version`, `.graphify-version`,
 - Node.js com `npm`. A versão recomendada é `24.9.0`, registrada em
   `mise.toml`.
 - Acesso à internet para instalar pacotes e chamar o OpenRouter.
-- Uma chave OpenRouter válida em `OPENROUTER_API_KEY`. Ela é usada pelo Prompt
-  Enhancer e pelo compressor do claude-mem.
+- Uma chave OpenRouter válida em `OPENROUTER_API_KEY`. Ela é usada pelo agente
+  Plan, pelo Prompt Enhancer e pelo compressor do claude-mem.
 - 9Router instalado e com as contas desejadas configuradas. Todos os modelos
   principais dependem do gateway local em `http://127.0.0.1:20128/v1`.
 
@@ -241,7 +242,7 @@ OpenCode e expõe `claude_mem_search`.
 
 `config/plugins/claude-mem-autostart.mjs` inicia o worker ao abrir o OpenCode e
 injeta contexto recente do projeto em cada system prompt. O compressor usa
-`qwen/qwen3.6-35b-a3b` diretamente pelo OpenRouter. Tier routing fica
+`openai/gpt-oss-20b` diretamente pelo OpenRouter. Tier routing fica
 desativado e o limite global de agentes é `1`, impedindo chamadas de compressão
 em paralelo. A credencial vem de `OPENROUTER_API_KEY`, sem duplicação no
 `settings.json`.
@@ -287,10 +288,9 @@ documentos.
 
 ## 9Router local
 
-Os provedores principais do 9router usam `http://127.0.0.1:20128/v1`. O prompt
-enhancer e o claude-mem chamam OpenRouter diretamente, fora do catálogo de
-providers do OpenCode. Cada família local usa seu transporte nativo para que o
-9router não converta níveis de esforço:
+Os provedores principais do 9router usam `http://127.0.0.1:20128/v1`. Plan,
+Prompt Enhancer e claude-mem chamam OpenRouter diretamente. Cada família local
+usa seu transporte nativo para que o 9router não converta níveis de esforço:
 
 - Claude usa `@ai-sdk/anthropic` e `/v1/messages`.
 - GPT Sol usa `@ai-sdk/openai` e `/v1/responses`.
@@ -312,6 +312,11 @@ como níveis de effort.
 Os IDs e limites foram obtidos diretamente de `/v1/models`. O valor
 `sk_9router` presente na configuração é apenas o placeholder exigido pelos
 adapters para acessar o serviço local sem autenticação; não é uma credencial.
+
+O agente embutido `plan` é uma exceção deliberada: ele usa
+`openrouter-oss/openai/gpt-oss-20b` com temperatura `0`. Esse provider lê
+`OPENROUTER_API_KEY` do ambiente e não interfere nos modelos principais do
+9Router. O mesmo modelo comprime as observações do claude-mem.
 
 ## Instalação em uma nova máquina
 

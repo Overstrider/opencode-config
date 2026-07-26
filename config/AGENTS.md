@@ -151,7 +151,7 @@ not been excluded.
 Claude-mem is the official user-level source for cross-session work history.
 Its worker and database live outside Git under `~/.claude-mem/`.
 
-- Compression uses `qwen/qwen3.6-35b-a3b` directly through OpenRouter. Read the
+- Compression uses `openai/gpt-oss-20b` directly through OpenRouter. Read the
   credential from `OPENROUTER_API_KEY`; do not duplicate it in settings. Tier
   routing is disabled and global agent concurrency is fixed at one.
 - At session start, use injected claude-mem context as historical evidence,

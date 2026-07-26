@@ -22,6 +22,8 @@ Last verified: 2026-07-26
 ## Runtime contract
 
 - Primary providers use 9Router at `127.0.0.1:20128`.
+- The built-in Plan agent uses `openai/gpt-oss-20b` through the isolated
+  OpenRouter provider.
 - claude-mem uses `127.0.0.1:37778`.
 - Prompt enhancement has a five-second network ceiling and fails open.
 - Claude model availability checks fail open when 9Router health state cannot

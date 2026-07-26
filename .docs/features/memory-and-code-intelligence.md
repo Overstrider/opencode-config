@@ -13,7 +13,7 @@ codebase-memory-mcp supplies fast structural queries.
 
 The claude-mem worker autostarts and injects recent project context. Graphify
 is query-first when a graph exists. The MCP automatically indexes and watches
-projects.
+projects. Memory compression uses `openai/gpt-oss-20b` through OpenRouter.
 
 ## Requirements and invariants
 

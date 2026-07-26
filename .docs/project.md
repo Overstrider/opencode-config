@@ -17,7 +17,8 @@ permission defaults.
 - `config/opencode.json` registers providers, models, permissions, MCPs, and
   plugins.
 - Local 9Router serves primary models through `127.0.0.1:20128`.
-- OpenRouter serves the prompt enhancer and claude-mem compression.
+- OpenRouter serves GPT-OSS planning/memory compression and Qwen prompt
+  enhancement.
 - User-level plugins enforce policy and coordinate external services.
 - Runtime data and secrets remain under user data directories outside Git.
 

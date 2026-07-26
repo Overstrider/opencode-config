@@ -54,3 +54,21 @@ test('OpenRouter prompt enhancer calls Qwen3.6 directly', async () => {
 test('OpenRouter credential is never embedded in the tracked config', () => {
   assert.doesNotMatch(configText, /sk-or-v1-/);
 });
+
+test('Plan uses GPT-OSS 20B through the isolated OpenRouter provider', () => {
+  assert.ok(config.enabled_providers.includes('openrouter-oss'));
+  assert.equal(
+    config.agent.plan.model,
+    'openrouter-oss/openai/gpt-oss-20b',
+  );
+  assert.equal(config.agent.plan.temperature, 0);
+  assert.equal(
+    config.provider['openrouter-oss'].options.apiKey,
+    '{env:OPENROUTER_API_KEY}',
+  );
+  assert.equal(
+    config.provider['openrouter-oss'].models['openai/gpt-oss-20b']
+      .limit.context,
+    131072,
+  );
+});

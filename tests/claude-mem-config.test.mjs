@@ -26,9 +26,10 @@ for (const [name, source] of [
   ['PowerShell installer', powershell],
   ['shell installer', shell],
 ]) {
-  test(`${name} fixes claude-mem to OpenRouter Qwen3.6`, () => {
+  test(`${name} fixes claude-mem to OpenRouter GPT-OSS 20B`, () => {
     assert.match(source, /CLAUDE_MEM_PROVIDER[^\r\n]*["']openrouter["']/);
-    assert.match(source, /qwen\/qwen3\.6-35b-a3b/);
+    assert.match(source, /openai\/gpt-oss-20b/);
+    assert.match(source, /openrouter-gpt-oss-20b/);
     assert.match(source, /CLAUDE_MEM_OPENROUTER_MODEL/);
     assert.match(source, /CLAUDE_MEM_MODEL_PROFILE/);
     assert.match(

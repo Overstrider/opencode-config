@@ -3,10 +3,17 @@
   "enabled_providers": [
     "9router-claude",
     "9router-sol",
-    "9router-kimi"
+    "9router-kimi",
+    "openrouter-oss"
   ],
   "model": "9router-claude/cc/claude-opus-5",
   "small_model": "9router-sol/cx/gpt-5.6-luna",
+  "agent": {
+    "plan": {
+      "model": "openrouter-oss/openai/gpt-oss-20b",
+      "temperature": 0
+    }
+  },
   "provider": {
     "9router-claude": {
       "npm": "@ai-sdk/anthropic",
@@ -399,6 +406,34 @@
             "max": {
               "reasoningEffort": "max"
             }
+          }
+        }
+      }
+    },
+    "openrouter-oss": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenRouter GPT-OSS",
+      "options": {
+        "baseURL": "https://openrouter.ai/api/v1",
+        "apiKey": "{env:OPENROUTER_API_KEY}",
+        "headers": {
+          "X-Title": "OpenCode Plan"
+        }
+      },
+      "models": {
+        "openai/gpt-oss-20b": {
+          "name": "GPT-OSS 20B",
+          "limit": {
+            "context": 131072,
+            "output": 131072
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           }
         }
       }

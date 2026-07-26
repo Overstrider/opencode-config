@@ -22,7 +22,8 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 
 ## External integrations
 
-- OpenRouter: prompt enhancement and claude-mem Qwen compression.
+- OpenRouter: Qwen prompt enhancement plus GPT-OSS 20B planning and
+  claude-mem compression.
 - GitHub/npm/uv registries: installation and updates.
 - 9Router: native Claude, OpenAI Responses, and OpenAI-compatible transports.
 
