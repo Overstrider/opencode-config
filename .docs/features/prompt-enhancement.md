@@ -27,7 +27,8 @@ session or try another model.
 
 ## Interfaces and data
 
-Credential: `OPENROUTER_API_KEY`. Metadata key: `promptEnhancer`.
+Credential: ignored `config/openrouter.key`, with `OPENROUTER_API_KEY` as
+fallback. Metadata key: `promptEnhancer`.
 
 ## Failures and edge cases
 

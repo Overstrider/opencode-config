@@ -25,7 +25,7 @@ try {
 } catch {}
 
 lines = lines.filter((line) =>
-  !/^\s*(?:ANTHROPIC_BASE_URL|ANTHROPIC_AUTH_TOKEN|OPENROUTER_API_KEY)\s*=/.test(
+  !/^\s*(?:ANTHROPIC_BASE_URL|ANTHROPIC_AUTH_TOKEN|OPENROUTER_API_KEY|CLAUDE_MEM_MODEL|CLAUDE_MEM_OPENROUTER_MODEL|CLAUDE_MEM_MODEL_PROFILE|CLAUDE_MEM_TIER_(?:SIMPLE|SUMMARY|FAST|SMART)_MODEL)\s*=/.test(
     line,
   ) &&
   !/^\s*#\s*(?:Local 9router gateway|OpenRouter credential) for claude-mem\./.test(

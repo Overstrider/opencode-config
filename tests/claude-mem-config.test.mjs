@@ -30,6 +30,7 @@ for (const [name, source] of [
     assert.match(source, /CLAUDE_MEM_PROVIDER[^\r\n]*["']openrouter["']/);
     assert.match(source, /openai\/gpt-oss-20b/);
     assert.match(source, /openrouter-gpt-oss-20b/);
+    assert.doesNotMatch(source, /qwen\/qwen3\.6-35b-a3b/);
     assert.match(source, /CLAUDE_MEM_OPENROUTER_MODEL/);
     assert.match(source, /CLAUDE_MEM_MODEL_PROFILE/);
     assert.match(
@@ -43,6 +44,8 @@ for (const [name, source] of [
     assert.doesNotMatch(source, /CLAUDE_MEM_TIER_ROUTING_ENABLED.*true/i);
     assert.doesNotMatch(source, /kimi\/kimi-k2\.7-code-highspeed/);
     assert.doesNotMatch(source, /cx\/gpt-5\.4-mini/);
+    assert.match(source, /openrouter\.key/);
+    assert.match(source, /codebase-memory-mcp --version/);
     assert.match(source, /configure-claude-mem-env\.mjs/);
     assert.match(source, /bun\s+[^\r\n]+\s+restart/);
   });
@@ -105,7 +108,10 @@ test('claude-mem env configurator preserves unrelated values', () => {
     writeFileSync(
       join(dataDir, '.env'),
       '\uFEFFKEEP_ME=1\nANTHROPIC_BASE_URL=http://localhost\n' +
-        'OPENROUTER_API_KEY=old-key\n',
+        'OPENROUTER_API_KEY=old-key\n' +
+        'CLAUDE_MEM_MODEL=qwen/qwen3.6-35b-a3b\n' +
+        'CLAUDE_MEM_OPENROUTER_MODEL=qwen/qwen3.6-35b-a3b\n' +
+        'CLAUDE_MEM_MODEL_PROFILE=openrouter-qwen36\n',
     );
     const result = spawnSync(process.execPath, [script, dataDir], {
       encoding: 'utf8',

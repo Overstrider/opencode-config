@@ -415,7 +415,7 @@
       "name": "OpenRouter GPT-OSS",
       "options": {
         "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{env:OPENROUTER_API_KEY}",
+        "apiKey": "{file:./openrouter.key}",
         "headers": {
           "X-Title": "OpenCode Plan"
         }

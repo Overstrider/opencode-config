@@ -73,7 +73,8 @@ The enhancer calls OpenRouter HTTPS directly with
 `qwen/qwen3.6-35b-a3b:nitro`. Never create an OpenCode child session or agent,
 ask for model selection, race models, or chain fallbacks. Reasoning is
 disabled, temperature is `0`, top-p is `0.8`, and no tools are involved. Read
-the credential only from `OPENROUTER_API_KEY`; never place it in Git or logs.
+the credential from ignored `config/openrouter.key`, with
+`OPENROUTER_API_KEY` as fallback; never place it in Git or logs.
 Use locally validated plain-text output.
 
 Enhancer attempts have a 5-second network-only ceiling. Its circuit breaker handles
@@ -152,8 +153,11 @@ Claude-mem is the official user-level source for cross-session work history.
 Its worker and database live outside Git under `~/.claude-mem/`.
 
 - Compression uses `openai/gpt-oss-20b` directly through OpenRouter. Read the
-  credential from `OPENROUTER_API_KEY`; do not duplicate it in settings. Tier
+  credential from ignored `config/openrouter.key`, with
+  `OPENROUTER_API_KEY` as fallback; do not duplicate it in settings. Tier
   routing is disabled and global agent concurrency is fixed at one.
+- Qwen belongs only to Prompt Enhancer. Remove legacy claude-mem model
+  overrides from `.env`; memory must remain on `openai/gpt-oss-20b`.
 - At session start, use injected claude-mem context as historical evidence,
   then verify it against current code and Graphify before acting.
 - For questions about earlier work, decisions, attempts, commands, or prior

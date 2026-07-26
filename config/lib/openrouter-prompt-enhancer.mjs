@@ -1,7 +1,23 @@
+import { readFileSync } from 'node:fs';
+
 export const OPENROUTER_ENHANCER_MODEL =
   'qwen/qwen3.6-35b-a3b:nitro';
 export const OPENROUTER_CHAT_URL =
   'https://openrouter.ai/api/v1/chat/completions';
+export const OPENROUTER_KEY_URL =
+  new URL('../openrouter.key', import.meta.url);
+
+export function readOpenRouterApiKey({
+  env = process.env,
+  readFile = readFileSync,
+  keyURL = OPENROUTER_KEY_URL,
+} = {}) {
+  try {
+    const fileKey = readFile(keyURL, 'utf8').trim();
+    if (fileKey) return fileKey;
+  } catch {}
+  return env.OPENROUTER_API_KEY?.trim() || '';
+}
 
 class OpenRouterRequestError extends Error {
   constructor(message, { status, headers, data } = {}) {
@@ -24,7 +40,7 @@ function responseText(data) {
 
 export function createOpenRouterPromptEnhancer({
   fetchImpl = globalThis.fetch,
-  apiKey = process.env.OPENROUTER_API_KEY,
+  apiKey = readOpenRouterApiKey(),
   model = OPENROUTER_ENHANCER_MODEL,
   url = OPENROUTER_CHAT_URL,
 } = {}) {

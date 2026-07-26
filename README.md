@@ -6,14 +6,39 @@ O diretório `config/` é a fonte de verdade e deve ser ligado a
 `~/.config/opencode`. Assim, alterações feitas na configuração global aparecem
 imediatamente no Git.
 
+## Primeiro passo: coloque sua chave OpenRouter
+
+O arquivo humano é `config/openrouter.key`. Ele contém somente a chave, sem
+nome de variável, aspas ou espaços.
+
+No Windows:
+
+```powershell
+Copy-Item .\config\openrouter.key.example .\config\openrouter.key
+notepad .\config\openrouter.key
+```
+
+No Linux, macOS ou WSL:
+
+```bash
+cp ./config/openrouter.key.example ./config/openrouter.key
+${EDITOR:-nano} ./config/openrouter.key
+```
+
+Apague `COLE_SUA_CHAVE_OPENROUTER_AQUI`, cole a chave real como única linha,
+salve e execute o instalador. `config/openrouter.key` é ignorado pelo Git. O
+OpenCode lê esse arquivo diretamente; o setup sincroniza a mesma chave para o
+worker do claude-mem. `OPENROUTER_API_KEY` continua aceito como fallback quando
+o arquivo não existe.
+
 ## Visão geral
 
 | Componente | Função | Dependência externa |
 | --- | --- | --- |
 | OpenCode `1.18.5` | TUI e runtime principal | Node.js/npm |
 | 9Router | Gateway local para Claude, GPT e Kimi | Serviço em `127.0.0.1:20128` |
-| GPT-OSS 20B | Modelo do agente Plan e compressor de memória | `OPENROUTER_API_KEY` e internet |
-| Prompt Enhancer | Melhora prompts via Qwen antes do modelo principal | `OPENROUTER_API_KEY` e internet |
+| GPT-OSS 20B | Modelo do agente Plan e compressor de memória | `config/openrouter.key` e internet |
+| Prompt Enhancer | Melhora prompts via Qwen antes do modelo principal | `config/openrouter.key` e internet |
 | claude-mem `13.12.4` | Memória entre sessões | Bun, OpenRouter e worker em `127.0.0.1:37778` |
 | Graphify `0.9.26` | Grafo navegável de cada codebase | `uv` e runtime Python |
 | codebase-memory-mcp `0.9.0` | Índice estrutural MCP com atualização automática | Node.js/npm |
@@ -32,8 +57,8 @@ Versões ficam pinadas em `.opencode-version`, `.graphify-version`,
 - Node.js com `npm`. A versão recomendada é `24.9.0`, registrada em
   `mise.toml`.
 - Acesso à internet para instalar pacotes e chamar o OpenRouter.
-- Uma chave OpenRouter válida em `OPENROUTER_API_KEY`. Ela é usada pelo agente
-  Plan, pelo Prompt Enhancer e pelo compressor do claude-mem.
+- Uma chave OpenRouter válida em `config/openrouter.key`, conforme o primeiro
+  passo. Ela é usada por Plan, Prompt Enhancer e claude-mem.
 - 9Router instalado e com as contas desejadas configuradas. Todos os modelos
   principais dependem do gateway local em `http://127.0.0.1:20128/v1`.
 
@@ -81,7 +106,9 @@ O instalador deste repositório não instala nem autentica o 9Router.
 
 ### Credencial OpenRouter
 
-Defina a chave antes de executar o instalador. No Windows:
+O caminho recomendado é o arquivo `config/openrouter.key` descrito no começo
+deste README. Como alternativa, defina a variável antes de executar o
+instalador. No Windows:
 
 ```powershell
 $env:OPENROUTER_API_KEY = "<sua-chave>"
@@ -98,10 +125,10 @@ Em Linux, macOS ou WSL:
 export OPENROUTER_API_KEY="<sua-chave>"
 ```
 
-Persista a variável pelo gerenciador de segredos ou configuração privada do
-shell. O setup copia a chave para `~/.claude-mem/.env`, com permissão restrita,
-porque o worker do claude-mem não lê a variável do processo em todos os fluxos.
-Esse arquivo continua fora do Git.
+Quando arquivo e variável existem, `config/openrouter.key` vence. O setup
+sincroniza a chave escolhida para `~/.claude-mem/.env`, com permissão restrita,
+porque o worker não lê o arquivo do repositório diretamente. Ambos ficam fora
+do Git.
 
 ## O que fica versionado
 
@@ -194,8 +221,8 @@ O enhancer chama diretamente
 `qwen/qwen3.6-35b-a3b:nitro`. Ele não cria sessão ou agente filho do OpenCode,
 não entra na fila de workspace e não faz seleção, corrida paralela ou fallback.
 A rota usa reasoning desativado, temperatura `0`, top-p `0.8` e nenhuma
-ferramenta. A saída é texto puro validado localmente. A credencial vem de
-`OPENROUTER_API_KEY`, fora deste Git.
+ferramenta. A saída é texto puro validado localmente. A credencial vem primeiro
+de `config/openrouter.key`, com `OPENROUTER_API_KEY` como fallback.
 
 Cada tentativa do enhancer tem teto de rede de 5 segundos e circuit breaker. Timeout,
 rede, `429`
@@ -244,8 +271,12 @@ OpenCode e expõe `claude_mem_search`.
 injeta contexto recente do projeto em cada system prompt. O compressor usa
 `openai/gpt-oss-20b` diretamente pelo OpenRouter. Tier routing fica
 desativado e o limite global de agentes é `1`, impedindo chamadas de compressão
-em paralelo. A credencial vem de `OPENROUTER_API_KEY`, sem duplicação no
-`settings.json`.
+em paralelo. A credencial vem de `config/openrouter.key` ou do fallback
+`OPENROUTER_API_KEY`, sem duplicação no `settings.json`.
+
+Qwen é usado somente pelo Prompt Enhancer. O setup remove overrides antigos de
+modelo do `~/.claude-mem/.env`, garantindo que a memória permaneça em
+`openai/gpt-oss-20b`.
 
 Banco SQLite, Chroma, logs, PID, configurações e o arquivo local de gateway
 ficam em `~/.claude-mem/`, fora deste Git. Memória é contexto histórico:
@@ -315,8 +346,8 @@ adapters para acessar o serviço local sem autenticação; não é uma credencia
 
 O agente embutido `plan` é uma exceção deliberada: ele usa
 `openrouter-oss/openai/gpt-oss-20b` com temperatura `0`. Esse provider lê
-`OPENROUTER_API_KEY` do ambiente e não interfere nos modelos principais do
-9Router. O mesmo modelo comprime as observações do claude-mem.
+`config/openrouter.key` e não interfere nos modelos principais do 9Router. O
+mesmo modelo comprime as observações do claude-mem.
 
 ## Instalação em uma nova máquina
 
@@ -335,7 +366,7 @@ pré-requisitos; os scripts cuidam dos pacotes restantes.
 ```powershell
 git clone https://github.com/Overstrider/opencode-config.git "$env:USERPROFILE\repos\opencode-config"
 cd "$env:USERPROFILE\repos\opencode-config"
-# Defina OPENROUTER_API_KEY e prepare o 9Router antes deste passo.
+# Preencha config\openrouter.key e prepare o 9Router antes deste passo.
 Set-ExecutionPolicy -Scope Process Bypass
 .\install.ps1
 opencode auth login
@@ -361,7 +392,7 @@ variáveis persistidas e plugins novos sejam carregados por processos novos.
 ```bash
 git clone https://github.com/Overstrider/opencode-config.git "$HOME/repos/opencode-config"
 cd "$HOME/repos/opencode-config"
-# Exporte OPENROUTER_API_KEY e inicie o 9Router antes deste passo.
+# Preencha config/openrouter.key e inicie o 9Router antes deste passo.
 ./install.sh
 opencode auth login
 ```
@@ -441,7 +472,8 @@ arquivo, evitando retorno silencioso à porta antiga `37777`.
 
 ### Prompt Enhancer envia o texto original
 
-Confirme `OPENROUTER_API_KEY` no ambiente do processo que abriu o OpenCode.
+Confirme que `config/openrouter.key` contém somente a chave real. Se o arquivo
+não existir, confirme `OPENROUTER_API_KEY` no ambiente do processo.
 Timeout, rede, crédito, quota ou autorização ativam circuit breaker e enviam o
 original sem bloquear a conversa. Reiniciar durante o cooldown não corrige
 crédito ou autorização; valide a conta OpenRouter.

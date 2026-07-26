@@ -5,6 +5,7 @@ import test from 'node:test';
 import {
   OPENROUTER_CHAT_URL,
   createOpenRouterPromptEnhancer,
+  readOpenRouterApiKey,
 } from '../config/lib/openrouter-prompt-enhancer.mjs';
 
 const configText = readFileSync(
@@ -12,6 +13,14 @@ const configText = readFileSync(
   'utf8',
 );
 const config = JSON.parse(configText);
+const gitignore = readFileSync(
+  new URL('../.gitignore', import.meta.url),
+  'utf8',
+);
+const keyExample = readFileSync(
+  new URL('../config/openrouter.key.example', import.meta.url),
+  'utf8',
+).trim();
 
 test('OpenRouter prompt enhancer calls Qwen3.6 directly', async () => {
   const calls = [];
@@ -53,6 +62,27 @@ test('OpenRouter prompt enhancer calls Qwen3.6 directly', async () => {
 
 test('OpenRouter credential is never embedded in the tracked config', () => {
   assert.doesNotMatch(configText, /sk-or-v1-/);
+  assert.match(gitignore, /^config\/openrouter\.key$/m);
+  assert.equal(keyExample, 'COLE_SUA_CHAVE_OPENROUTER_AQUI');
+});
+
+test('OpenRouter key file takes precedence over the environment fallback', () => {
+  assert.equal(
+    readOpenRouterApiKey({
+      env: { OPENROUTER_API_KEY: 'environment-key' },
+      readFile: () => ' file-key\r\n',
+    }),
+    'file-key',
+  );
+  assert.equal(
+    readOpenRouterApiKey({
+      env: { OPENROUTER_API_KEY: ' environment-key ' },
+      readFile: () => {
+        throw new Error('missing');
+      },
+    }),
+    'environment-key',
+  );
 });
 
 test('Plan uses GPT-OSS 20B through the isolated OpenRouter provider', () => {
@@ -64,7 +94,7 @@ test('Plan uses GPT-OSS 20B through the isolated OpenRouter provider', () => {
   assert.equal(config.agent.plan.temperature, 0);
   assert.equal(
     config.provider['openrouter-oss'].options.apiKey,
-    '{env:OPENROUTER_API_KEY}',
+    '{file:./openrouter.key}',
   );
   assert.equal(
     config.provider['openrouter-oss'].models['openai/gpt-oss-20b']

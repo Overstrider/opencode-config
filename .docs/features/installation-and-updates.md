@@ -17,8 +17,10 @@ resolved config. Update scripts use fast-forward-only Git pulls.
 
 ## Requirements and invariants
 
-Node/npm and OpenRouter access are mandatory. Graphify needs uv/Python.
-9Router installation and authentication remain external.
+Node/npm and OpenRouter access are mandatory. The human stores the OpenRouter
+key as the only line in ignored `config/openrouter.key`; environment input is
+the fallback. Graphify needs uv/Python. 9Router installation and authentication
+remain external.
 
 ## Architecture and data flow
 
@@ -33,7 +35,9 @@ Entrypoints: `install.ps1`, `install.sh`, `update.ps1`, `update.sh`,
 ## Failures and edge cases
 
 The Windows 9Router path is machine-specific. Unix scripts do not persist
-policy variables across shells. Missing OpenRouter credentials stop setup.
+policy variables across shells. Missing or placeholder OpenRouter credentials
+stop setup. Already-correct global tool versions are not reinstalled over
+running executables.
 
 ## Verification
 

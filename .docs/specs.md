@@ -15,8 +15,9 @@ Last verified: 2026-07-26
 
 - Never commit API keys, tokens, auth files, `.env` contents, memory data, or
   generated project indexes.
-- `OPENROUTER_API_KEY` comes from the environment and is copied only to the
-  machine-local claude-mem `.env`.
+- OpenRouter credentials come from ignored `config/openrouter.key`, with
+  `OPENROUTER_API_KEY` as fallback, and are copied only to the machine-local
+  claude-mem `.env`.
 - The local `sk_9router` string is a non-secret adapter placeholder.
 
 ## Runtime contract

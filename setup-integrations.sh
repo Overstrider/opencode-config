@@ -3,6 +3,7 @@ set -euo pipefail
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source_config="${repository_root}/config"
+openrouter_key_file="${source_config}/openrouter.key"
 graphify_version="$(tr -d '[:space:]' < "${repository_root}/.graphify-version")"
 claude_mem_version="$(tr -d '[:space:]' < "${repository_root}/.claude-mem-version")"
 codebase_memory_version="$(tr -d '[:space:]' < "${repository_root}/.codebase-memory-mcp-version")"
@@ -24,7 +25,17 @@ fi
 export PATH="${HOME}/.local/bin:${PATH}"
 
 uv tool install --upgrade "graphifyy==${graphify_version}"
-npm install --global "codebase-memory-mcp@${codebase_memory_version}"
+installed_codebase_memory_version=""
+if command -v codebase-memory-mcp >/dev/null 2>&1; then
+  installed_codebase_memory_version="$(
+    codebase-memory-mcp --version 2>/dev/null |
+      sed -nE 's/.* ([0-9]+\.[0-9]+\.[0-9]+)$/\1/p' ||
+      true
+  )"
+fi
+if [[ "${installed_codebase_memory_version}" != "${codebase_memory_version}" ]]; then
+  npm install --global "codebase-memory-mcp@${codebase_memory_version}"
+fi
 codebase-memory-mcp config set auto_index true
 codebase-memory-mcp config set auto_watch true
 
@@ -63,6 +74,21 @@ Object.assign(settings, {
 });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
 NODE
+
+if [[ -f "${openrouter_key_file}" ]]; then
+  OPENROUTER_API_KEY="$(tr -d '\r\n' < "${openrouter_key_file}")"
+fi
+if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+  echo "Add the key to config/openrouter.key or set OPENROUTER_API_KEY." >&2
+  exit 1
+fi
+if [[ "${OPENROUTER_API_KEY}" == "COLE_SUA_CHAVE_OPENROUTER_AQUI" ]]; then
+  echo "Replace the example text in config/openrouter.key with the real key." >&2
+  exit 1
+fi
+export OPENROUTER_API_KEY
+umask 077
+printf '%s\n' "${OPENROUTER_API_KEY}" > "${openrouter_key_file}"
 
 node "${repository_root}/scripts/configure-claude-mem-env.mjs" \
   "${claude_mem_data_dir}"

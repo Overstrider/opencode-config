@@ -27,7 +27,9 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 - GitHub/npm/uv registries: installation and updates.
 - 9Router: native Claude, OpenAI Responses, and OpenAI-compatible transports.
 
-Credentials are environment- or runtime-owned and never documented by value.
+The human-editable OpenRouter credential lives in ignored
+`config/openrouter.key`; runtime copies and values are never versioned or
+documented.
 
 ## Deployment and operations
 

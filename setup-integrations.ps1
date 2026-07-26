@@ -5,6 +5,7 @@ $ErrorActionPreference = "Stop"
 
 $repositoryRoot = $PSScriptRoot
 $sourceConfig = Join-Path $repositoryRoot "config"
+$openRouterKeyPath = Join-Path $sourceConfig "openrouter.key"
 $userProfilePath = [Environment]::GetFolderPath("UserProfile")
 $graphifyVersion = (Get-Content -Raw -LiteralPath (
     Join-Path $repositoryRoot ".graphify-version"
@@ -80,9 +81,21 @@ if ($LASTEXITCODE -ne 0) {
     throw "Falha ao instalar Graphify $graphifyVersion."
 }
 
-npm install --global "codebase-memory-mcp@$codebaseMemoryVersion"
-if ($LASTEXITCODE -ne 0) {
-    throw "Falha ao instalar codebase-memory-mcp $codebaseMemoryVersion."
+$installedCodebaseMemoryVersion = $null
+if (Get-Command codebase-memory-mcp -ErrorAction SilentlyContinue) {
+    $codebaseMemoryVersionOutput = (
+        & codebase-memory-mcp --version 2>$null |
+            Out-String
+    ).Trim()
+    if ($codebaseMemoryVersionOutput -match "(\d+\.\d+\.\d+)$") {
+        $installedCodebaseMemoryVersion = $Matches[1]
+    }
+}
+if ($installedCodebaseMemoryVersion -ne $codebaseMemoryVersion) {
+    npm install --global "codebase-memory-mcp@$codebaseMemoryVersion"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Falha ao instalar codebase-memory-mcp $codebaseMemoryVersion."
+    }
 }
 codebase-memory-mcp config set auto_index true
 codebase-memory-mcp config set auto_watch true
@@ -155,7 +168,15 @@ $settingsJson = $claudeMemSettings |
     [Text.UTF8Encoding]::new($false)
 )
 
-$openRouterApiKey = $env:OPENROUTER_API_KEY
+$openRouterApiKey = $null
+if (Test-Path -LiteralPath $openRouterKeyPath) {
+    $openRouterApiKey = (
+        Get-Content -Raw -LiteralPath $openRouterKeyPath
+    ).Trim()
+}
+if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
+    $openRouterApiKey = $env:OPENROUTER_API_KEY
+}
 if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
     $openRouterApiKey = [Environment]::GetEnvironmentVariable(
         "OPENROUTER_API_KEY",
@@ -163,9 +184,17 @@ if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
     )
 }
 if ([string]::IsNullOrWhiteSpace($openRouterApiKey)) {
-    throw "OPENROUTER_API_KEY não foi encontrada; claude-mem não pode usar OpenRouter."
+    throw "Adicione a chave em config\openrouter.key ou defina OPENROUTER_API_KEY."
+}
+if ($openRouterApiKey -eq "COLE_SUA_CHAVE_OPENROUTER_AQUI") {
+    throw "Substitua o texto de exemplo em config\openrouter.key pela chave real."
 }
 $env:OPENROUTER_API_KEY = $openRouterApiKey
+[IO.File]::WriteAllText(
+    $openRouterKeyPath,
+    $openRouterApiKey + [Environment]::NewLine,
+    [Text.UTF8Encoding]::new($false)
+)
 node (
     Join-Path $repositoryRoot "scripts\configure-claude-mem-env.mjs"
 ) $claudeMemDataDir

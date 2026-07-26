@@ -14,6 +14,7 @@ codebase-memory-mcp supplies fast structural queries.
 The claude-mem worker autostarts and injects recent project context. Graphify
 is query-first when a graph exists. The MCP automatically indexes and watches
 projects. Memory compression uses `openai/gpt-oss-20b` through OpenRouter.
+Qwen is reserved for Prompt Enhancer and is not a claude-mem model.
 
 ## Requirements and invariants
 
@@ -33,8 +34,9 @@ codebase-memory-mcp writes under the user cache.
 ## Failures and edge cases
 
 Stale worker ports or BOM-prefixed settings can cause connection errors;
-wrappers normalize settings. Full headless Graphify extraction of documents
-needs a semantic backend.
+wrappers normalize settings. Setup removes legacy model overrides from the
+claude-mem `.env` so settings cannot be silently replaced. Full headless
+Graphify extraction of documents needs a semantic backend.
 
 ## Verification
 

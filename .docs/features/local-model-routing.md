@@ -18,9 +18,9 @@ routes by selecting GPT Luna Low. Plan uses the isolated
 
 ## Requirements and invariants
 
-9Router must answer on `127.0.0.1:20128`. Plan additionally requires
-`OPENROUTER_API_KEY`. Native effort and thinking settings must remain
-provider-specific.
+9Router must answer on `127.0.0.1:20128`. Plan additionally requires ignored
+`config/openrouter.key` or the `OPENROUTER_API_KEY` fallback. Native effort and
+thinking settings must remain provider-specific.
 
 ## Architecture and data flow
 

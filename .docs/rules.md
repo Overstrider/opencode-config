@@ -26,7 +26,8 @@ Last verified: 2026-07-26
 ## Safety and security
 
 - Never stage `.env`, auth, runtime databases, logs, generated graphs, or keys.
-- Never embed `OPENROUTER_API_KEY` in configuration or documentation.
+- Never track `config/openrouter.key` or embed an OpenRouter credential in
+  configuration or documentation.
 - Treat BYPASS mode as capable of destructive, unrestricted operations.
 - Validate exact filesystem targets before destructive installer maintenance.
 

@@ -7,6 +7,7 @@ config/.caveman-active.*
 config/.ponytail-active
 config/.ponytail-active.*
 config/opencode.json.bak
+config/openrouter.key
 /graphify-out/
 
 # Machine-local overrides
