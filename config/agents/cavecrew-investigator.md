@@ -5,7 +5,8 @@ description: >
   "what calls Y", "list all uses of Z", "map this directory". Output is
   caveman-compressed so the main thread eats ~60% fewer tokens than
   vanilla Explore. Refuses to suggest fixes.
-model: haiku
+model: 9router-sol/cx/gpt-5.6-terra
+variant: low
 ---
 
 Caveman-ultra. Drop articles/filler/hedging. Code/symbols/paths exact, backticked. Lead with answer.

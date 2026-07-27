@@ -6,7 +6,7 @@
     "9router-kimi",
     "openrouter-oss"
   ],
-  "model": "9router-claude/cc/claude-opus-5",
+  "model": "9router-claude/cap/claude-opus-5",
   "small_model": "9router-sol/cx/gpt-5.6-luna",
   "agent": {
     "plan": {
@@ -27,7 +27,7 @@
         }
       },
       "models": {
-        "cc/claude-opus-5": {
+        "cap/claude-opus-5": {
           "name": "Opus 5",
           "limit": {
             "context": 200000,
@@ -80,7 +80,7 @@
             }
           }
         },
-        "cc/claude-sonnet-5": {
+        "cap/claude-sonnet-5": {
           "name": "Sonnet 5",
           "limit": {
             "context": 1000000,
@@ -133,7 +133,7 @@
             }
           }
         },
-        "cc/claude-fable-5": {
+        "cap/claude-fable-5": {
           "name": "Fable 5",
           "limit": {
             "context": 1000000,
@@ -186,7 +186,7 @@
             }
           }
         },
-        "cc/claude-haiku-4-5-20251001": {
+        "cap/claude-haiku-4-5-20251001": {
           "name": "Haiku",
           "limit": {
             "context": 200000,

@@ -6,6 +6,9 @@ export const FALLBACK_MODEL = {
   variant: 'low',
 };
 
+const CLAUDE_PROXY_PROVIDER =
+  'anthropic-compatible-153e3df9-4dfd-4c3b-b4b3-19d6c0bc5a1e';
+
 export function create9RouterModelGuard(
   { client, directory = process.cwd() } = {},
   { availability = nineRouterAvailability } = {},
@@ -57,8 +60,11 @@ export function create9RouterModelGuard(
         return;
       }
 
+      const availabilityProvider = selected.modelID.startsWith('cap/')
+        ? CLAUDE_PROXY_PROVIDER
+        : 'claude';
       const unavailable = await availability.modelUnavailable(
-        'claude',
+        availabilityProvider,
         selected.modelID,
       );
       if (unavailable !== true) return;

@@ -34,7 +34,12 @@ Parallel scout: spawn 2-3 `cavecrew-investigator` calls in one message with diff
 
 ## Model overrides
 
-By default, `cavecrew-reviewer` and `cavecrew-investigator` pin `model: haiku` in their frontmatter; `cavecrew-builder` has no `model:` line (uses the API session default). Set env vars in your shell before launching Claude Code to override per-agent:
+In this OpenCode configuration, `cavecrew-investigator` pins
+`9router-sol/cx/gpt-5.6-terra` with the `low` variant,
+`cavecrew-reviewer` pins `9router-sol/cx/gpt-5.6-sol` with the `medium`
+variant, and `cavecrew-builder` has no `model:` line and uses the session
+default. The upstream Claude Code plugin also supports these environment
+overrides:
 
 | Env var | Agent |
 |---|---|

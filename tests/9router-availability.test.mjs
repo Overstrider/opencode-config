@@ -118,3 +118,31 @@ test('model guard preserves Claude when 9router reports it available', async () 
   await hooks['chat.message']({ sessionID: 'root' }, output);
   assert.deepEqual(output.message.model, model);
 });
+
+test('proxy-backed Claude ignores legacy Claude cooldown', async () => {
+  let checkedProvider;
+  const hooks = create9RouterModelGuard(
+    {},
+    {
+      availability: {
+        modelUnavailable: async (provider) => {
+          checkedProvider = provider;
+          return false;
+        },
+      },
+    },
+  );
+  const model = {
+    providerID: '9router-claude',
+    modelID: 'cap/claude-opus-5',
+    variant: 'low',
+  };
+  const output = { message: { sessionID: 'root', model: { ...model } } };
+
+  await hooks['chat.message']({ sessionID: 'root' }, output);
+  assert.equal(
+    checkedProvider,
+    'anthropic-compatible-153e3df9-4dfd-4c3b-b4b3-19d6c0bc5a1e',
+  );
+  assert.deepEqual(output.message.model, model);
+});

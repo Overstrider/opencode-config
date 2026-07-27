@@ -92,17 +92,28 @@ deve entrar neste repositório.
 
 ### 9Router
 
-O plugin de autostart atual procura o CLI no caminho Windows
-`E:\minima\MerlinRouter\node_modules\9router\cli.js`. Em outra máquina, faça
-uma destas ações antes de abrir o OpenCode:
+O plugin de autostart não guarda caminhos da máquina no Git. Para informar onde
+o 9Router está instalado, copie o exemplo e edite somente o arquivo local:
 
-- instale o MerlinRouter nesse caminho;
-- ajuste `ROUTER_DIR` em `config/plugins/9router-autostart.mjs`; ou
-- inicie o 9Router manualmente em `127.0.0.1:20128`.
+```powershell
+Copy-Item .\config\9router.local.example.json .\config\9router.local.json
+notepad .\config\9router.local.json
+```
 
-Em Linux, macOS e WSL, o caminho Windows não funciona; o 9Router precisa ser
-iniciado separadamente ou o plugin precisa ser adaptado para o caminho local.
-O instalador deste repositório não instala nem autentica o 9Router.
+Em Linux, macOS ou WSL:
+
+```bash
+cp ./config/9router.local.example.json ./config/9router.local.json
+${EDITOR:-nano} ./config/9router.local.json
+```
+
+Substitua o valor de `directory` pela pasta que contém
+`node_modules/9router/cli.js`. `config/9router.local.json` é ignorado pelo Git.
+Como alternativa, defina `OPENCODE_9ROUTER_DIR` no ambiente. Se nenhuma das
+duas opções existir, o autostart fica desativado sem revelar nem tentar adivinhar
+pastas da máquina; ainda é possível iniciar o serviço manualmente em
+`127.0.0.1:20128`. O instalador deste repositório não instala nem autentica o
+9Router.
 
 ### Credencial OpenRouter
 
