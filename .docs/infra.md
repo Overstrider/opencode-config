@@ -14,7 +14,7 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 
 | Service | Endpoint/data | Ownership |
 | --- | --- | --- |
-| 9Router | `127.0.0.1:20128` | External MerlinRouter checkout |
+| 9Router | `127.0.0.1:20128` | Pinned official npm package; local state |
 | claude-mem worker | `127.0.0.1:37778`, `~/.claude-mem/` | Local integration |
 | codebase-memory-mcp | project-confined process; `~/.cache/codebase-memory-mcp/` | Local MCP |
 | OpenCode | `~/.local/share/opencode/` | OpenCode runtime |
@@ -33,8 +33,10 @@ documented.
 
 ## Deployment and operations
 
-- `install.*` links the configuration, restores dependencies, configures
-  integrations, and validates OpenCode.
+- `bootstrap.sh` clones or updates the configuration and securely captures the
+  OpenRouter key before delegating to installation.
+- `install.*` links the configuration, restores dependencies, installs and
+  starts 9Router, configures integrations, and validates OpenCode.
 - `update.*` performs `git pull --ff-only`, restores pinned versions, and
   reruns integration setup.
 - Existing unrelated global config is backed up with a timestamp.

@@ -32,7 +32,9 @@ permission defaults.
 
 ## Entrypoints and commands
 
+- Bootstrap Unix: `bootstrap.sh`
 - Install: `install.ps1` or `install.sh`
+- 9Router setup: `setup-9router.ps1` or `setup-9router.sh`
 - Update: `update.ps1` or `update.sh`
 - Integration repair: `setup-integrations.ps1` or `setup-integrations.sh`
 - Validate config: `opencode debug config`

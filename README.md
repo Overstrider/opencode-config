@@ -92,28 +92,25 @@ deve entrar neste repositório.
 
 ### 9Router
 
-O plugin de autostart não guarda caminhos da máquina no Git. Para informar onde
-o 9Router está instalado, copie o exemplo e edite somente o arquivo local:
-
-```powershell
-Copy-Item .\config\9router.local.example.json .\config\9router.local.json
-notepad .\config\9router.local.json
-```
-
-Em Linux, macOS ou WSL:
+No Linux, macOS e WSL, `install.sh` instala a versão pinada do pacote oficial
+`9router` globalmente, inicia o serviço sem abrir o navegador e valida
+`http://127.0.0.1:20128/v1/models`. Para executar somente essa etapa:
 
 ```bash
-cp ./config/9router.local.example.json ./config/9router.local.json
-${EDITOR:-nano} ./config/9router.local.json
+./setup-9router.sh
 ```
 
-Substitua o valor de `directory` pela pasta que contém
-`node_modules/9router/cli.js`. `config/9router.local.json` é ignorado pelo Git.
-Como alternativa, defina `OPENCODE_9ROUTER_DIR` no ambiente. Se nenhuma das
-duas opções existir, o autostart fica desativado sem revelar nem tentar adivinhar
-pastas da máquina; ainda é possível iniciar o serviço manualmente em
-`127.0.0.1:20128`. O instalador deste repositório não instala nem autentica o
-9Router.
+A instalação oficial requer Node.js 20+. O dashboard fica em
+`http://127.0.0.1:20128/dashboard`. Nele você conecta várias contas e
+provedores por OAuth ou chave, habilita os modelos que cada conexão oferece e
+cria combos com fallback ordenado.
+
+O autostart procura primeiro um checkout explicitamente configurado e depois o
+executável global instalado pelo npm. Um checkout de desenvolvimento continua
+suportado por `OPENCODE_9ROUTER_DIR` ou pelo arquivo local ignorado
+`config/9router.local.json`, criado a partir de
+`config/9router.local.example.json`. Credenciais, banco e estado do 9Router
+ficam fora deste repositório.
 
 ### Credencial OpenRouter
 
@@ -335,15 +332,25 @@ documentos.
 
 ## 9Router local
 
-Os provedores principais do 9router usam `http://127.0.0.1:20128/v1`. Plan,
-Prompt Enhancer e claude-mem chamam OpenRouter diretamente. Cada família local
-usa seu transporte nativo para que o 9router não converta níveis de esforço:
+Os provedores principais usam `http://127.0.0.1:20128/v1`. Plan, Prompt
+Enhancer e claude-mem chamam OpenRouter diretamente. Cada família local usa seu
+transporte nativo para que o 9Router não converta níveis de esforço:
 
 - Claude usa `@ai-sdk/anthropic` e `/v1/messages`.
 - GPT Sol usa `@ai-sdk/openai` e `/v1/responses`.
 - Kimi usa `@ai-sdk/openai-compatible` e `/v1/chat/completions`.
 
-Modelos visíveis:
+O controle ocorre em duas camadas:
+
+1. No dashboard do 9Router, conecte provedores e contas, escolha os modelos
+   disponíveis e crie combos/fallbacks. Segredos e tokens ficam no armazenamento
+   local do 9Router.
+2. Em `config/opencode.json`, `enabled_providers` e os mapas `models`
+   formam a allow-list que o OpenCode pode enxergar. Para adicionar um modelo,
+   confirme primeiro o ID em `/v1/models` e depois declare-o no provider com o
+   adapter e os limites corretos.
+
+Modelos visíveis atualmente:
 
 - Opus 5 — `low`, `medium`, `high`, `xhigh`, `max`
 - Sonnet 5 — `low`, `medium`, `high`, `xhigh`, `max`
@@ -352,18 +359,10 @@ Modelos visíveis:
 - Kimi K3 — `low`, `medium`, `high`, `max`
 - Haiku — `high` e `max` por orçamento nativo de thinking
 
-Use `Ctrl+T` na TUI para alternar a variante do modelo atual. No Haiku, `high`
-usa 16.000 tokens de thinking e `max` usa 31.999; esses nomes não são enviados
-como níveis de effort.
-
-Os IDs e limites foram obtidos diretamente de `/v1/models`. O valor
-`sk_9router` presente na configuração é apenas o placeholder exigido pelos
-adapters para acessar o serviço local sem autenticação; não é uma credencial.
-
-O agente embutido `plan` é uma exceção deliberada: ele usa
-`openrouter-oss/openai/gpt-oss-20b` com temperatura `0`. Esse provider lê
-`config/openrouter.key` e não interfere nos modelos principais do 9Router. O
-mesmo modelo comprime as observações do claude-mem.
+Use `Ctrl+T` na TUI para alternar a variante do modelo atual. O agente
+embutido `plan` usa `openrouter-oss/openai/gpt-oss-20b` com temperatura
+`0`; esse provider lê `config/openrouter.key` e não interfere nos modelos
+principais do 9Router. O mesmo modelo comprime as observações do claude-mem.
 
 ## Instalação em uma nova máquina
 
@@ -382,7 +381,7 @@ pré-requisitos; os scripts cuidam dos pacotes restantes.
 ```powershell
 git clone https://github.com/Overstrider/opencode-config.git "$env:USERPROFILE\repos\opencode-config"
 cd "$env:USERPROFILE\repos\opencode-config"
-# Preencha config\openrouter.key e prepare o 9Router antes deste passo.
+# Preencha config\openrouter.key; o instalador prepara o 9Router.
 Set-ExecutionPolicy -Scope Process Bypass
 .\install.ps1
 opencode auth login
@@ -405,13 +404,29 @@ variáveis persistidas e plugins novos sejam carregados por processos novos.
 
 ### Linux, macOS ou WSL
 
+Instalação completa em uma linha interativa:
+
 ```bash
-git clone https://github.com/Overstrider/opencode-config.git "$HOME/repos/opencode-config"
-cd "$HOME/repos/opencode-config"
-# Preencha config/openrouter.key e inicie o 9Router antes deste passo.
+bash <(curl -fsSL https://raw.githubusercontent.com/Overstrider/opencode-config/main/bootstrap.sh)
+```
+
+O bootstrap clona ou atualiza o repositório, solicita a chave OpenRouter sem
+exibi-la, grava-a apenas no arquivo ignorado, instala OpenCode, 9Router e as
+integrações, inicia os serviços e valida a configuração. Para revisar antes de
+executar, baixe `bootstrap.sh`, leia o conteúdo e então rode com `bash`.
+
+Se o repositório já estiver clonado:
+
+```bash
+cp config/openrouter.key.example config/openrouter.key
+${EDITOR:-nano} config/openrouter.key
 ./install.sh
 opencode auth login
 ```
+
+Depois abra `http://127.0.0.1:20128/dashboard`, altere a senha inicial do
+dashboard e conecte os provedores desejados. OAuth e chaves dos provedores são
+etapas interativas e nunca entram neste Git.
 
 Se já existir uma configuração que não aponta para este repositório, o
 instalador a move para um backup com timestamp antes de criar o link.
@@ -476,8 +491,10 @@ O projeto contém documentos e a CLI headless quer um backend semântico. Use
 
 ### Modelos falham com conexão recusada em `127.0.0.1:20128`
 
-O 9Router não está ativo ou o caminho de autostart não existe nessa máquina.
-Inicie o serviço manualmente, corrija `ROUTER_DIR` e valide `/v1/models`.
+Execute `./setup-9router.sh` ou inicie `9router --no-browser`. Depois valide
+`http://127.0.0.1:20128/v1/models`. Se o pacote global não estiver no
+`PATH`, reabra o terminal; para um checkout de desenvolvimento, configure
+`config/9router.local.json`.
 
 ### `[claude-mem] Worker ... Unable to connect`
 

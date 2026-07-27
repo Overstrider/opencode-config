@@ -26,3 +26,20 @@ test('machine-local 9router configuration is ignored by Git', () => {
   assert.ok(!tracked.includes('config/9router.local.json'));
   assert.ok(fs.existsSync('config/9router.local.example.json'));
 });
+
+test('installers restore pinned 9router without tracking credentials', () => {
+  const version = fs.readFileSync('.9router-version', 'utf8').trim();
+  assert.match(version, /^\d+\.\d+\.\d+$/);
+
+  for (const file of ['install.sh', 'update.sh']) {
+    assert.match(fs.readFileSync(file, 'utf8'), /setup-9router\.sh/);
+  }
+  for (const file of ['install.ps1', 'update.ps1']) {
+    assert.match(fs.readFileSync(file, 'utf8'), /setup-9router\.ps1/);
+  }
+
+  const bootstrap = fs.readFileSync('bootstrap.sh', 'utf8');
+  assert.match(bootstrap, /read -r -s/);
+  assert.match(bootstrap, /umask 077/);
+  assert.doesNotMatch(bootstrap, /echo.*openrouter_key/i);
+});
