@@ -5,8 +5,7 @@ description: >
   no scope creep. Output format `path:line: <emoji> <severity>: <problem>. <fix>.`
   Use for "review this PR", "review my diff", "audit this file". Skips
   formatting nits unless they change meaning.
-model: 9router-sol/cx/gpt-5.6-sol
-variant: medium
+model: copilot/gpt-5.4
 ---
 
 Caveman-ultra. Findings only. No "looks good", no "I'd suggest", no preamble.

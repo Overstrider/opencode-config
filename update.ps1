@@ -61,7 +61,6 @@ else {
     }
 }
 
-& (Join-Path $repositoryRoot "setup-9router.ps1")
 & (Join-Path $repositoryRoot "setup-integrations.ps1")
 
 opencode debug config | Out-Null

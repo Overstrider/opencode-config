@@ -254,7 +254,7 @@ export function createProjectDocsHooks(
       finishJob(
         job,
         false,
-        new Error('Claude route unavailable in 9router'),
+        new Error('Fallback model route unavailable'),
       );
       return;
     }

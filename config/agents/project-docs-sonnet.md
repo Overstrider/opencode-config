@@ -3,7 +3,7 @@ name: project-docs-sonnet
 description: Internal Sonnet fallback maintainer used only by the user-level project-docs hook.
 mode: subagent
 hidden: true
-model: 9router-kimi/kimi/kimi-k3
+model: copilot/gpt-5.4
 variant: low
 steps: 30
 permission:

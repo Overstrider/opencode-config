@@ -1,56 +1,41 @@
-# Local Model Routing
+# Direct Copilot Routing
 
-Status: `partial`
+Status: `active`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-27
 
 ## Summary
 
-OpenCode routes Claude, GPT, and Kimi models through local 9Router transports.
-The built-in Plan agent uses GPT-OSS 20B through OpenRouter.
+All OpenCode agents call GitHub Copilot directly.
 
 ## Behavior
 
-Claude uses the Anthropic adapter, GPT uses OpenAI Responses, and Kimi uses
-OpenAI-compatible chat completions. A guard avoids known-unavailable Claude
-routes by selecting GPT Luna Low. Plan uses the isolated
-`openrouter-oss/openai/gpt-oss-20b` provider with temperature zero.
+The `copilot` provider uses the OpenAI-compatible adapter, reads the ignored
+`config/copilot.key`, and targets `https://api.githubcopilot.com`.
 
 ## Requirements and invariants
 
-9Router must answer on `127.0.0.1:20128`. Installers restore its pinned official
-npm package; provider enrollment and model/combination selection remain in the
-local dashboard. Plan additionally requires ignored `config/openrouter.key` or
-the `OPENROUTER_API_KEY` fallback. Native effort and thinking settings must
-remain provider-specific.
+The token never enters Git. No local gateway is required.
 
 ## Architecture and data flow
 
-Primary OpenCode provider -> native SDK adapter -> 9Router -> upstream
-account. Plan -> OpenAI-compatible adapter -> OpenRouter -> GPT-OSS 20B.
-Availability guard reads the authenticated local 9Router endpoint.
+OpenCode -> Copilot provider -> GitHub Copilot API.
 
 ## Interfaces and data
 
-Provider connections, enabled upstream models, and fallback combos are managed
-by the 9Router dashboard. `enabled_providers` and each provider's `models` map
-in `config/opencode.json` are the OpenCode-facing allow-list.
+The allow-list currently exposes `copilot/gpt-5.4`.
 
 ## Failures and edge cases
 
-Autostart prefers an explicitly configured development checkout and otherwise
-resolves the npm-global executable from `PATH`. Availability lookup fails open
-if 9Router state cannot be read.
+Missing, expired, or incompatible tokens cause authentication failure.
 
 ## Verification
 
-Run the availability tests, inspect `/v1/models`, and send one request per
-provider family.
+Run `opencode debug config` and send a small request.
 
 ## Source map
 
-`.9router-version`, `setup-9router.*`, `config/opencode.json`,
-`config/plugins/9router-*.mjs`, `config/lib/9router-*.mjs`.
+`config/opencode.json`, `config/copilot.key.example`.
 
 ## Related documentation
 

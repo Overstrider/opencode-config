@@ -9,7 +9,6 @@ config/.ponytail-active.*
 config/opencode.json.bak
 config/openrouter.key
 config/copilot.key
-config/9router.local.json
 /graphify-out/
 
 # Machine-local overrides

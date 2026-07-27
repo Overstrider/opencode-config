@@ -15,7 +15,7 @@ memory, documentation audits, implementation policies, and permission defaults.
 - `config/` is the source of truth linked to `~/.config/opencode`.
 - `config/opencode.json` registers providers, models, permissions, MCPs, and
   plugins.
-- Local 9Router serves primary models through `127.0.0.1:20128`.
+- GitHub Copilot serves all models directly over HTTPS.
 - User-level plugins enforce policy and coordinate external services.
 - Runtime data and secrets remain under user data directories outside Git.
 
@@ -31,7 +31,6 @@ memory, documentation audits, implementation policies, and permission defaults.
 
 - Bootstrap Unix: `bootstrap.sh`
 - Install: `install.ps1` or `install.sh`
-- 9Router setup: `setup-9router.ps1` or `setup-9router.sh`
 - Update: `update.ps1` or `update.sh`
 - Integration repair: `setup-integrations.ps1` or `setup-integrations.sh`
 - Validate config: `opencode debug config`

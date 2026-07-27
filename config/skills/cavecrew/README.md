@@ -34,12 +34,10 @@ Parallel scout: spawn 2-3 `cavecrew-investigator` calls in one message with diff
 
 ## Model overrides
 
-In this OpenCode configuration, `cavecrew-investigator` pins
-`9router-sol/cx/gpt-5.6-terra` with the `low` variant,
-`cavecrew-reviewer` pins `9router-sol/cx/gpt-5.6-sol` with the `medium`
-variant, and `cavecrew-builder` has no `model:` line and uses the session
-default. The upstream Claude Code plugin also supports these environment
-overrides:
+In this OpenCode configuration, `cavecrew-investigator` and
+`cavecrew-reviewer` pin `copilot/gpt-5.4`, while `cavecrew-builder` has no
+`model:` line and uses the session default. The upstream Claude Code plugin
+also supports these environment overrides:
 
 | Env var | Agent |
 |---|---|

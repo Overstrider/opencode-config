@@ -13,8 +13,8 @@ and BYPASS removes OpenCode approval prompts.
 
 Plugins and global instructions reassert Ultra modes throughout session
 lifecycle. Permission entries and environment overrides allow all known tools.
-Cavecrew investigation uses GPT-5.6 Terra `low` through 9Router, review uses
-GPT-5.6 Sol `medium`, and the builder inherits the active session model.
+Cavecrew investigation and review use `copilot/gpt-5.4`; the builder inherits
+the active session model.
 
 ## Requirements and invariants
 

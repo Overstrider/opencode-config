@@ -5,6 +5,12 @@ repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source_config="${repository_root}/config"
 target_config="${HOME}/.config/opencode"
 opencode_version="$(tr -d '[:space:]' < "${repository_root}/.opencode-version")"
+copilot_key="${source_config}/copilot.key"
+
+if [[ ! -f "${copilot_key}" ]]; then
+  cp -- "${source_config}/copilot.key.example" "${copilot_key}"
+  chmod 600 "${copilot_key}" 2>/dev/null || true
+fi
 
 if ! command -v npm >/dev/null 2>&1; then
   echo "npm não foi encontrado. Instale Node.js ou use mise antes de continuar." >&2
@@ -40,7 +46,6 @@ else
   echo "Link criado: ${target_config} -> ${source_config}"
 fi
 
-bash "${repository_root}/setup-9router.sh"
 bash "${repository_root}/setup-integrations.sh"
 
 opencode debug config >/dev/null

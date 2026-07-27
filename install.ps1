@@ -7,6 +7,11 @@ $ErrorActionPreference = "Stop"
 
 $repositoryRoot = $PSScriptRoot
 $sourceConfig = Join-Path $repositoryRoot "config"
+$copilotKeyPath = Join-Path $sourceConfig "copilot.key"
+$copilotKeyExample = Join-Path $sourceConfig "copilot.key.example"
+if (-not (Test-Path -LiteralPath $copilotKeyPath)) {
+    Copy-Item -LiteralPath $copilotKeyExample -Destination $copilotKeyPath
+}
 $userProfilePath = [Environment]::GetFolderPath("UserProfile")
 $configParent = Join-Path $userProfilePath ".config"
 $targetConfig = Join-Path $configParent "opencode"
@@ -105,7 +110,6 @@ if (-not $alreadyLinked) {
     }
 }
 
-& (Join-Path $repositoryRoot "setup-9router.ps1")
 & (Join-Path $repositoryRoot "setup-integrations.ps1")
 
 $openCodeCommand = (Get-Command opencode.cmd -ErrorAction Stop).Source

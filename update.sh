@@ -18,7 +18,6 @@ else
   npm install --prefix "${source_config}"
 fi
 
-bash "${repository_root}/setup-9router.sh"
 bash "${repository_root}/setup-integrations.sh"
 
 opencode debug config >/dev/null

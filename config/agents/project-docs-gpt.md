@@ -3,7 +3,7 @@ name: project-docs-gpt
 description: Internal GPT documentation maintainer used only by the user-level project-docs hook.
 mode: subagent
 hidden: true
-model: 9router-sol/cx/gpt-5.6-sol
+model: copilot/gpt-5.4
 variant: low
 steps: 30
 permission:
