@@ -43,6 +43,12 @@ export function createOpenRouterPromptEnhancer({
   apiKey = readOpenRouterApiKey(),
   model = OPENROUTER_ENHANCER_MODEL,
   url = OPENROUTER_CHAT_URL,
+  // Deterministic-rewrite defaults for the direct-OpenRouter route. Pass
+  // `undefined` for any of these (e.g. when routing through 9router) to omit
+  // the field entirely and defer to that backend's own model defaults.
+  temperature = 0,
+  topP = 0.8,
+  reasoning = { effort: 'none', exclude: true },
 } = {}) {
   if (typeof fetchImpl !== 'function') {
     throw new TypeError('A fetch implementation is required');
@@ -75,12 +81,12 @@ export function createOpenRouterPromptEnhancer({
           { role: 'system', content: policy },
           { role: 'user', content: payload },
         ],
-        reasoning: {
-          effort: 'none',
-          exclude: true,
-        },
-        temperature: 0,
-        top_p: 0.8,
+        // Explicit: some backends (9router) default a missing `stream` to
+        // true and SSE-encode the body, which breaks a plain response.json().
+        stream: false,
+        ...(reasoning !== undefined ? { reasoning } : {}),
+        ...(temperature !== undefined ? { temperature } : {}),
+        ...(topP !== undefined ? { top_p: topP } : {}),
         max_tokens: maxOutputTokens,
       }),
     });

@@ -4,6 +4,7 @@
     "9router-claude",
     "9router-sol",
     "9router-kimi",
+    "9router-merlin",
     "openrouter-oss"
   ],
   "model": "9router-claude/cap/claude-opus-5",
@@ -423,6 +424,31 @@
       "models": {
         "openai/gpt-oss-20b": {
           "name": "GPT-OSS 20B",
+          "limit": {
+            "context": 131072,
+            "output": 131072
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        }
+      }
+    },
+    "9router-merlin": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "9Router Merlin (Remote)",
+      "options": {
+        "baseURL": "https://merlin.loldinis.com/v1",
+        "apiKey": "{file:./9router-merlin.key}"
+      },
+      "models": {
+        "openrouter/openai/gpt-oss-20b": {
+          "name": "GPT-OSS 20B (via Merlin)",
           "limit": {
             "context": 131072,
             "output": 131072
