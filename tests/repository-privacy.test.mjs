@@ -43,3 +43,15 @@ test('installers restore pinned 9router without tracking credentials', () => {
   assert.match(bootstrap, /umask 077/);
   assert.doesNotMatch(bootstrap, /echo.*openrouter_key/i);
 });
+
+test('minimal branch excludes OpenRouter, Prompt Enhancer, and claude-mem', () => {
+  const config = JSON.parse(fs.readFileSync('config/opencode.json', 'utf8'));
+  const serialized = JSON.stringify(config);
+
+  assert.doesNotMatch(serialized, /openrouter/i);
+  assert.doesNotMatch(serialized, /prompt-enhancer/i);
+  assert.doesNotMatch(serialized, /claude-mem/i);
+  assert.ok(config.enabled_providers.includes('9router-copilot'));
+  assert.ok(config.provider['9router-copilot'].models['gh/gpt-5.4']);
+  assert.ok(fs.existsSync('config/copilot.key.example'));
+});

@@ -6,10 +6,9 @@ Last verified: 2026-07-26
 
 ## Purpose
 
-Maintain a reproducible, user-global OpenCode configuration with pinned
-versions, local model routing, prompt enhancement, persistent memory,
-codebase navigation, documentation audits, implementation policies, and
-permission defaults.
+Maintain a minimal Copilot-ready, user-global OpenCode configuration with
+pinned versions, local model routing, Graphify, project-confined structural
+memory, documentation audits, implementation policies, and permission defaults.
 
 ## Architecture
 
@@ -17,8 +16,6 @@ permission defaults.
 - `config/opencode.json` registers providers, models, permissions, MCPs, and
   plugins.
 - Local 9Router serves primary models through `127.0.0.1:20128`.
-- OpenRouter serves GPT-OSS planning/memory compression and Qwen prompt
-  enhancement.
 - User-level plugins enforce policy and coordinate external services.
 - Runtime data and secrets remain under user data directories outside Git.
 

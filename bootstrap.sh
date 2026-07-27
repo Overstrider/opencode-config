@@ -19,25 +19,22 @@ else
   git clone -- "${repository_url}" "${checkout_dir}"
 fi
 
-key_file="${checkout_dir}/config/openrouter.key"
+key_file="${checkout_dir}/config/copilot.key"
 if [[ ! -s "${key_file}" ]]; then
-  if [[ -n "${OPENROUTER_API_KEY:-}" ]]; then
-    openrouter_key="${OPENROUTER_API_KEY}"
+  if [[ -n "${GITHUB_COPILOT_TOKEN:-}" ]]; then
+    copilot_key="${GITHUB_COPILOT_TOKEN}"
   elif [[ -t 0 ]]; then
-    read -r -s -p "OpenRouter API key: " openrouter_key
+    read -r -s -p "GitHub Copilot token (or Enter to configure OAuth later): " copilot_key
     printf '\n'
   else
-    echo "Set OPENROUTER_API_KEY before running non-interactively." >&2
+    echo "Set GITHUB_COPILOT_TOKEN before running non-interactively." >&2
     exit 1
   fi
 
-  if [[ -z "${openrouter_key}" ]]; then
-    echo "The OpenRouter key cannot be empty." >&2
-    exit 1
+  if [[ -n "${copilot_key}" ]]; then
+    umask 077
+    printf '%s\n' "${copilot_key}" > "${key_file}"
   fi
-
-  umask 077
-  printf '%s\n' "${openrouter_key}" > "${key_file}"
 fi
 
 exec bash "${checkout_dir}/install.sh"

@@ -4,13 +4,13 @@
     "9router-claude",
     "9router-sol",
     "9router-kimi",
-    "openrouter-oss"
+    "9router-copilot"
   ],
   "model": "9router-claude/cap/claude-opus-5",
   "small_model": "9router-sol/cx/gpt-5.6-luna",
   "agent": {
     "plan": {
-      "model": "openrouter-oss/openai/gpt-oss-20b",
+      "model": "9router-sol/cx/gpt-5.6-luna",
       "temperature": 0
     }
   },
@@ -410,26 +410,24 @@
         }
       }
     },
-    "openrouter-oss": {
+    "9router-copilot": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenRouter GPT-OSS",
+      "name": "9Router GitHub Copilot",
       "options": {
-        "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{file:./openrouter.key}",
-        "headers": {
-          "X-Title": "OpenCode Plan"
-        }
+        "baseURL": "http://127.0.0.1:20128/v1",
+        "apiKey": "sk_9router"
       },
       "models": {
-        "openai/gpt-oss-20b": {
-          "name": "GPT-OSS 20B",
+        "gh/gpt-5.4": {
+          "name": "Copilot GPT-5.4",
           "limit": {
-            "context": 131072,
-            "output": 131072
+            "context": 128000,
+            "output": 64000
           },
           "modalities": {
             "input": [
-              "text"
+              "text",
+              "image"
             ],
             "output": [
               "text"
@@ -476,9 +474,6 @@
     "./plugins/caveman/plugin.js",
     "./plugins/ponytail-lock.mjs",
     "./plugins/graphify.js",
-    "./plugins/claude-mem-wrapper.mjs",
-    "./plugins/claude-mem-autostart.mjs",
-    "./plugins/project-docs-hook.mjs",
-    "./plugins/prompt-enhancer-hook.mjs"
+    "./plugins/project-docs-hook.mjs"
   ]
 }

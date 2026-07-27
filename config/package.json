@@ -7,7 +7,6 @@
     "@ai-sdk/openai": "3.0.88",
     "@ai-sdk/openai-compatible": "2.0.41",
     "@dietrichgebert/ponytail": "4.8.4",
-    "@opencode-ai/plugin": "1.18.5",
-    "claude-mem": "13.12.4"
+    "@opencode-ai/plugin": "1.18.5"
   }
 }
