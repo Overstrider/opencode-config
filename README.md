@@ -37,7 +37,7 @@ o arquivo não existe.
 | --- | --- | --- |
 | OpenCode `1.18.5` | TUI e runtime principal | Node.js/npm |
 | 9Router | Gateway local para Claude, GPT e Kimi | Serviço em `127.0.0.1:20128` |
-| GPT-OSS 20B | Modelo do agente Plan e compressor de memória | `config/openrouter.key` e internet |
+| Qwen 3.7 Flash | Prompt Enhancer e compressor de memória | `config/openrouter.key` e internet |
 | Prompt Enhancer | Melhora prompts via Qwen antes do modelo principal | `config/openrouter.key` e internet |
 | claude-mem `13.12.4` | Memória entre sessões | Bun, OpenRouter e worker em `127.0.0.1:37778` |
 | Graphify `0.9.26` | Grafo navegável de cada codebase | `uv` e runtime Python |
@@ -277,14 +277,14 @@ OpenCode e expõe `claude_mem_search`.
 
 `config/plugins/claude-mem-autostart.mjs` inicia o worker ao abrir o OpenCode e
 injeta contexto recente do projeto em cada system prompt. O compressor usa
-`openai/gpt-oss-20b` diretamente pelo OpenRouter. Tier routing fica
+`qwen/qwen3.7-flash` diretamente pelo OpenRouter. Tier routing fica
 desativado e o limite global de agentes é `1`, impedindo chamadas de compressão
 em paralelo. A credencial vem de `config/openrouter.key` ou do fallback
 `OPENROUTER_API_KEY`, sem duplicação no `settings.json`.
 
-Qwen é usado somente pelo Prompt Enhancer. O setup remove overrides antigos de
-modelo do `~/.claude-mem/.env`, garantindo que a memória permaneça em
-`openai/gpt-oss-20b`.
+Qwen 3.7 Flash é usado pelo Prompt Enhancer e pelo claude-mem. O setup remove
+overrides antigos de modelo do `~/.claude-mem/.env`, garantindo que a memória
+permaneça em `qwen/qwen3.7-flash`.
 
 Banco SQLite, Chroma, logs, PID, configurações e o arquivo local de gateway
 ficam em `~/.claude-mem/`, fora deste Git. Memória é contexto histórico:
@@ -336,7 +336,6 @@ Os provedores principais usam `http://127.0.0.1:20128/v1`. Plan, Prompt
 Enhancer e claude-mem chamam OpenRouter diretamente. Cada família local usa seu
 transporte nativo para que o 9Router não converta níveis de esforço:
 
-- Claude usa `@ai-sdk/anthropic` e `/v1/messages`.
 - GPT Sol usa `@ai-sdk/openai` e `/v1/responses`.
 - Kimi usa `@ai-sdk/openai-compatible` e `/v1/chat/completions`.
 
@@ -359,10 +358,10 @@ Modelos visíveis atualmente:
 - Kimi K3 — `low`, `medium`, `high`, `max`
 - Haiku — `high` e `max` por orçamento nativo de thinking
 
-Use `Ctrl+T` na TUI para alternar a variante do modelo atual. O agente
-embutido `plan` usa `openrouter-oss/openai/gpt-oss-20b` com temperatura
-`0`; esse provider lê `config/openrouter.key` e não interfere nos modelos
-principais do 9Router. O mesmo modelo comprime as observações do claude-mem.
+Use `Ctrl+T` na TUI para alternar a variante do modelo atual. O Prompt Enhancer
+usa `9router-qwen/openrouter/qwen/qwen3.7-flash`; esse provider lê
+`config/9router-merlin.key` e não interfere nos modelos principais do 9Router.
+O mesmo modelo comprime as observações do claude-mem.
 
 ## Instalação em uma nova máquina
 

@@ -130,8 +130,8 @@ else {
     $claudeMemSettings = [pscustomobject]@{}
 }
 
-$claudeMemProfile = "openrouter-gpt-oss-20b"
-$claudeMemModel = "openai/gpt-oss-20b"
+$claudeMemProfile = "openrouter-qwen3.7-flash"
+$claudeMemModel = "qwen/qwen3.7-flash"
 
 $claudeMemSettings | Add-Member -Force NoteProperty `
     "CLAUDE_MEM_PROVIDER" "openrouter"

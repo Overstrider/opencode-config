@@ -55,8 +55,8 @@ let settings = {};
 try {
   settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 } catch {}
-const profile = 'openrouter-gpt-oss-20b';
-const model = 'openai/gpt-oss-20b';
+const profile = 'openrouter-qwen3.7-flash';
+const model = 'qwen/qwen3.7-flash';
 Object.assign(settings, {
   CLAUDE_MEM_PROVIDER: 'openrouter',
   CLAUDE_MEM_OPENROUTER_MODEL: model,

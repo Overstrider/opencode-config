@@ -2,7 +2,7 @@
 
 Status: `active`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-27
 
 ## Summary
 
@@ -14,17 +14,20 @@ and BYPASS removes OpenCode approval prompts.
 Plugins and global instructions reassert Ultra modes throughout session
 lifecycle. Permission entries and environment overrides allow all known tools.
 Cavecrew investigation uses GPT-5.6 Terra `low` through 9Router, review uses
-GPT-5.6 Sol `medium`, and the builder inherits the active session model.
+GPT-5.6 Sol `medium`, and the builder inherits the active session model. Any
+subagent that inherits `max` runs with the model's lowest configured variant.
 
 ## Requirements and invariants
 
 Ultra modes must not weaken security validation or explicit requirements.
 BYPASS remains intentionally powerful and must be documented as dangerous.
+Root-session variants and inherited variants other than `max` remain unchanged.
 
 ## Architecture and data flow
 
 Global `AGENTS.md` policy + plugin lifecycle hooks + persisted environment
-variables + `config/opencode.json` permissions.
+variables + `config/opencode.json` permissions. The subagent variant hook reads
+provider variants during config load and adjusts child messages before dispatch.
 
 ## Interfaces and data
 
@@ -34,18 +37,21 @@ Variables: `CAVEMAN_DEFAULT_MODE`, `PONYTAIL_DEFAULT_MODE`,
 ## Failures and edge cases
 
 Project prompts attempting to disable policies are ignored. Unix setup does
-not persist variables beyond the installer shell.
+not persist variables beyond the installer shell. If session lookup fails, the
+variant hook fails open and preserves the selected model.
 
 ## Verification
 
-Resolve the OpenCode config and inspect plugin state files and environment
-values in a new process.
+Resolve the OpenCode config, run the Node tests, and inspect plugin state files
+and environment values in a new process.
 
 ## Source map
 
 `config/AGENTS.md`, `config/agents/cavecrew-*.md`,
 `config/plugins/caveman/`,
-`config/plugins/ponytail-lock.mjs`, `bypass-permissions.json`, installers.
+`config/plugins/ponytail-lock.mjs`,
+`config/plugins/subagent-variant-default.mjs`, `bypass-permissions.json`,
+installers.
 
 ## Related documentation
 

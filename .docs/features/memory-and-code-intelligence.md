@@ -16,8 +16,8 @@ is query-first when a graph exists. The MCP automatically indexes and watches
 projects. Its launcher detects the current session's project root and confines
 the MCP process to it with `CBM_ALLOWED_ROOT`; its protocol proxy independently
 rejects `index_repository` requests outside that exact root. Memory compression
-uses `openai/gpt-oss-20b` through OpenRouter. Qwen is reserved for Prompt
-Enhancer and is not a claude-mem model.
+uses `qwen/qwen3.7-flash` through OpenRouter. The same model serves Prompt
+Enhancer through Merlin 9Router.
 
 ## Requirements and invariants
 

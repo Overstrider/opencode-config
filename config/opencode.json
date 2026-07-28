@@ -1,230 +1,26 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "enabled_providers": [
-    "9router-claude",
     "9router-sol",
     "9router-kimi",
-    "9router-merlin",
-    "openrouter-oss"
+    "9router-sakana",
+    "9router-qwen"
   ],
-  "model": "9router-claude/cap/claude-opus-5",
+  "model": "9router-qwen/openrouter/qwen/qwen3.7-flash",
   "small_model": "9router-sol/cx/gpt-5.6-luna",
   "agent": {
     "plan": {
-      "model": "openrouter-oss/openai/gpt-oss-20b",
-      "temperature": 0
+      "model": "9router-sol/cx/gpt-5.6-sol",
+      "variant": "high"
     }
   },
   "provider": {
-    "9router-claude": {
-      "npm": "@ai-sdk/anthropic",
-      "name": "9Router Claude (Native)",
-      "options": {
-        "baseURL": "http://127.0.0.1:20128/v1",
-        "apiKey": "sk_9router",
-        "headers": {
-          "User-Agent": "claude-code/opencode-native",
-          "x-app": "cli"
-        }
-      },
-      "models": {
-        "cap/claude-opus-5": {
-          "name": "Opus 5",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "low"
-            },
-            "medium": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "medium"
-            },
-            "high": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "high"
-            },
-            "xhigh": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "xhigh"
-            },
-            "max": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "max"
-            }
-          }
-        },
-        "cap/claude-sonnet-5": {
-          "name": "Sonnet 5",
-          "limit": {
-            "context": 1000000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "low"
-            },
-            "medium": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "medium"
-            },
-            "high": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "high"
-            },
-            "xhigh": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "xhigh"
-            },
-            "max": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "max"
-            }
-          }
-        },
-        "cap/claude-fable-5": {
-          "name": "Fable 5",
-          "limit": {
-            "context": 1000000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "low"
-            },
-            "medium": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "medium"
-            },
-            "high": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "high"
-            },
-            "xhigh": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "xhigh"
-            },
-            "max": {
-              "thinking": {
-                "type": "adaptive",
-                "display": "summarized"
-              },
-              "effort": "max"
-            }
-          }
-        },
-        "cap/claude-haiku-4-5-20251001": {
-          "name": "Haiku",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "high": {
-              "thinking": {
-                "type": "enabled",
-                "budgetTokens": 16000
-              }
-            },
-            "max": {
-              "thinking": {
-                "type": "enabled",
-                "budgetTokens": 31999
-              }
-            }
-          }
-        }
-      }
-    },
     "9router-sol": {
       "npm": "@ai-sdk/openai",
-      "name": "9Router GPT Sol (Native)",
+      "name": "9Router GPT Sol (Merlin Remote)",
       "options": {
-        "baseURL": "http://127.0.0.1:20128/v1",
-        "apiKey": "sk_9router",
+        "baseURL": "https://merlin.loldinis.com/v1",
+        "apiKey": "{file:./9router-merlin.key}",
         "headers": {
           "User-Agent": "codex-cli/opencode-native"
         }
@@ -347,9 +143,10 @@
     },
     "9router-kimi": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "9Router Kimi (Native)",
+      "name": "9Router Kimi (Merlin Remote)",
       "options": {
-        "baseURL": "http://127.0.0.1:20128/v1"
+        "baseURL": "https://merlin.loldinis.com/v1",
+        "apiKey": "{file:./9router-merlin.key}"
       },
       "models": {
         "kimi/kimi-k2.6": {
@@ -411,26 +208,25 @@
         }
       }
     },
-    "openrouter-oss": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenRouter GPT-OSS",
+    "9router-qwen": {
+      "npm": "@ai-sdk/openai",
+      "name": "9Router Qwen (Merlin Remote)",
       "options": {
-        "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{file:./openrouter.key}",
-        "headers": {
-          "X-Title": "OpenCode Plan"
-        }
+        "baseURL": "https://merlin.loldinis.com/v1",
+        "apiKey": "{file:./9router-merlin.key}"
       },
       "models": {
-        "openai/gpt-oss-20b": {
-          "name": "GPT-OSS 20B",
+        "openrouter/qwen/qwen3.7-flash": {
+          "name": "Qwen 3.7 Flash",
           "limit": {
-            "context": 131072,
-            "output": 131072
+            "context": 1000000,
+            "output": 65536
           },
           "modalities": {
             "input": [
-              "text"
+              "text",
+              "image",
+              "video"
             ],
             "output": [
               "text"
@@ -439,27 +235,87 @@
         }
       }
     },
-    "9router-merlin": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "9Router Merlin (Remote)",
+    "9router-sakana": {
+      "npm": "@ai-sdk/openai",
+      "name": "9Router Sakana Fugu (Merlin Remote)",
       "options": {
         "baseURL": "https://merlin.loldinis.com/v1",
         "apiKey": "{file:./9router-merlin.key}"
       },
       "models": {
-        "openrouter/openai/gpt-oss-20b": {
-          "name": "GPT-OSS 20B (via Merlin)",
+        "sakana/fugu": {
+          "name": "Fugu",
           "limit": {
-            "context": 131072,
-            "output": 131072
+            "context": 1000000,
+            "output": 1000000
           },
           "modalities": {
             "input": [
-              "text"
+              "text",
+              "image"
             ],
             "output": [
               "text"
             ]
+          },
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        },
+        "sakana/fugu-ultra": {
+          "name": "Fugu Ultra",
+          "limit": {
+            "context": 1000000,
+            "output": 1000000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            },
+            "max": {
+              "reasoningEffort": "max"
+            }
+          }
+        },
+        "sakana/fugu-ultra-20260615": {
+          "name": "Fugu Ultra v1.0",
+          "limit": {
+            "context": 1000000,
+            "output": 1000000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
           }
         }
       }
@@ -497,10 +353,9 @@
     }
   },
   "plugin": [
-    "./plugins/9router-autostart.mjs",
-    "./plugins/9router-model-guard.mjs",
     "./plugins/caveman/plugin.js",
     "./plugins/ponytail-lock.mjs",
+    "./plugins/subagent-variant-default.mjs",
     "./plugins/graphify.js",
     "./plugins/claude-mem-wrapper.mjs",
     "./plugins/claude-mem-autostart.mjs",

@@ -69,13 +69,12 @@ only the model-facing copy uses the enhanced text. Enhancing uses only the
 current message, plus attachment names and MIME types, never prior conversation
 content.
 
-The enhancer calls OpenRouter HTTPS directly with
-`qwen/qwen3.6-35b-a3b:nitro`. Never create an OpenCode child session or agent,
-ask for model selection, race models, or chain fallbacks. Reasoning is
-disabled, temperature is `0`, top-p is `0.8`, and no tools are involved. Read
-the credential from ignored `config/openrouter.key`, with
-`OPENROUTER_API_KEY` as fallback; never place it in Git or logs.
-Use locally validated plain-text output.
+The enhancer calls `https://merlin.loldinis.com/v1/chat/completions` directly
+with `openrouter/qwen/qwen3.7-flash`. Never create an OpenCode child session or
+agent, ask for model selection, race models, or chain fallbacks. Read the
+credential from ignored `config/9router-merlin.key`, with
+`NINEROUTER_MERLIN_API_KEY` as fallback; never place it in Git or logs. Use
+locally validated plain-text output.
 
 Enhancer attempts have a 5-second network-only ceiling. Its circuit breaker handles
 failures: transient failures back off from 60 seconds to 15 minutes; credit,
@@ -84,12 +83,6 @@ hours. Provider `Retry-After` is honored. During cooldown, skip the call
 immediately. Failure sends the original prompt unchanged and displays a
 deduplicated warning; do not try a second model. Child, internal, synthetic,
 command-generated, and image-only messages are not enhanced.
-
-The user-level `9router-model-guard` checks the same non-generative availability
-endpoint before every Claude request. When 9router reports the selected Claude
-route unavailable, it changes that message to GPT 5.6 Sol Low before dispatch,
-avoiding known 429s and OpenCode retry delays. Recovery remains owned by
-9router's provider health state.
 
 Prefix a prompt with `!raw` followed by whitespace to bypass enhancement. The
 complete original text, including `!raw`, remains visible in history; the main
@@ -152,12 +145,13 @@ not been excluded.
 Claude-mem is the official user-level source for cross-session work history.
 Its worker and database live outside Git under `~/.claude-mem/`.
 
-- Compression uses `openai/gpt-oss-20b` directly through OpenRouter. Read the
+- Compression uses `qwen/qwen3.7-flash` directly through OpenRouter. Read the
   credential from ignored `config/openrouter.key`, with
   `OPENROUTER_API_KEY` as fallback; do not duplicate it in settings. Tier
   routing is disabled and global agent concurrency is fixed at one.
-- Qwen belongs only to Prompt Enhancer. Remove legacy claude-mem model
-  overrides from `.env`; memory must remain on `openai/gpt-oss-20b`.
+- Qwen 3.7 Flash serves Prompt Enhancer and claude-mem compression. Remove
+  legacy model overrides from `.env`; memory must remain on
+  `qwen/qwen3.7-flash`.
 - At session start, use injected claude-mem context as historical evidence,
   then verify it against current code and Graphify before acting.
 - For questions about earlier work, decisions, attempts, commands, or prior

@@ -14,7 +14,7 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 
 | Service | Endpoint/data | Ownership |
 | --- | --- | --- |
-| 9Router | `127.0.0.1:20128` | Pinned official npm package; local state |
+| Merlin 9Router | `https://merlin.loldinis.com` | Remote model gateway |
 | claude-mem worker | `127.0.0.1:37778`, `~/.claude-mem/` | Local integration |
 | codebase-memory-mcp | project-confined process; `~/.cache/codebase-memory-mcp/` | Local MCP |
 | OpenCode | `~/.local/share/opencode/` | OpenCode runtime |
@@ -22,10 +22,10 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 
 ## External integrations
 
-- OpenRouter: Qwen prompt enhancement plus GPT-OSS 20B planning and
-  claude-mem compression.
+- Merlin 9Router: all OpenCode model traffic, including GPT Sol High planning
+  and Qwen 3.7 Flash prompt enhancement.
 - GitHub/npm/uv registries: installation and updates.
-- 9Router: native Claude, OpenAI Responses, and OpenAI-compatible transports.
+- Provider upstreams remain behind Merlin 9Router.
 
 The human-editable OpenRouter credential lives in ignored
 `config/openrouter.key`; runtime copies and values are never versioned or
@@ -40,8 +40,7 @@ documented.
 - `update.*` performs `git pull --ff-only`, restores pinned versions, and
   reruns integration setup.
 - Existing unrelated global config is backed up with a timestamp.
-- Worker restart is owned by the setup scripts; plugin autostart handles later
-  availability loss.
+- Worker restart is owned by the setup scripts.
 - Each codebase-memory-mcp launcher resolves the current project root, sets
   `CBM_ALLOWED_ROOT`, rejects unsafe or unmarked roots before starting the
   upstream binary, and filters out-of-root indexing requests at the MCP
@@ -49,7 +48,7 @@ documented.
 
 ## Observability
 
-- 9Router models: `GET http://127.0.0.1:20128/v1/models`
+- 9Router models: `GET https://merlin.loldinis.com/v1/models`
 - claude-mem health: `GET http://127.0.0.1:37778/api/health`
 - Resolved config: `opencode debug config`
 - OpenCode logs: `~/.local/share/opencode/log/`

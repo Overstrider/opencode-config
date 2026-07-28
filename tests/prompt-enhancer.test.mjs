@@ -167,7 +167,7 @@ test('plugin wrapper exposes initial and model-facing hooks', async () => {
   );
   assert.deepEqual(
     requests.map(({ init }) => JSON.parse(init.body).model),
-    ['qwen/qwen3.6-35b-a3b:nitro'],
+    ['openrouter/qwen/qwen3.7-flash'],
   );
   assert.equal(mock.creates.length, 0);
   assert.equal(mock.prompts.length, 0);

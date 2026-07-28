@@ -7,7 +7,7 @@ Last verified: 2026-07-26
 ## Purpose
 
 Maintain a reproducible, user-global OpenCode configuration with pinned
-versions, local model routing, prompt enhancement, persistent memory,
+versions, remote model routing, prompt enhancement, persistent memory,
 codebase navigation, documentation audits, implementation policies, and
 permission defaults.
 
@@ -16,9 +16,10 @@ permission defaults.
 - `config/` is the source of truth linked to `~/.config/opencode`.
 - `config/opencode.json` registers providers, models, permissions, MCPs, and
   plugins.
-- Local 9Router serves primary models through `127.0.0.1:20128`.
-- OpenRouter serves GPT-OSS planning/memory compression and Qwen prompt
-  enhancement.
+- `merlin.loldinis.com` is the only OpenCode model gateway.
+- Primary models, GPT Sol High planning, and Qwen 3.7 Flash use the remote
+  9Router through their provider-native adapters. Qwen 3.7 Flash handles prompt
+  enhancement and claude-mem compression.
 - User-level plugins enforce policy and coordinate external services.
 - Runtime data and secrets remain under user data directories outside Git.
 

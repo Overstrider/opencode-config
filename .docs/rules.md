@@ -14,6 +14,10 @@ Last verified: 2026-07-26
 - claude-mem is historical evidence, not current truth.
 - Prompt Enhancer changes only model-facing text; visible history remains
   original.
+- OpenCode model traffic must use `merlin.loldinis.com`; local 9Router and
+  direct OpenRouter providers are not enabled.
+- Subagents inheriting `max` use the selected model's lowest configured variant;
+  root sessions and non-`max` selections remain unchanged.
 - Caveman Ultra and Ponytail Ultra are mandatory global policies.
 - BYPASS permissions are deliberate and security-sensitive.
 
