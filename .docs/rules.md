@@ -2,7 +2,7 @@
 
 Documentation status: `verified`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Decisions and invariants
 
@@ -12,8 +12,6 @@ Last verified: 2026-07-26
 - Every codebase-memory-mcp process is confined to its OpenCode session's
   detected safe project root; machine-wide roots are rejected.
 - claude-mem is historical evidence, not current truth.
-- Prompt Enhancer changes only model-facing text; visible history remains
-  original.
 - OpenCode model traffic must use `merlin.loldinis.com`; local 9Router and
   direct OpenRouter providers are not enabled.
 - Subagents inheriting `max` use the selected model's lowest configured variant;

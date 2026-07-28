@@ -2,7 +2,7 @@
 
 Status: `active`
 
-Last verified: 2026-07-27
+Last verified: 2026-07-28
 
 ## Summary
 
@@ -42,8 +42,7 @@ request per provider family.
 
 ## Source map
 
-`config/opencode.json`, `config/9router-merlin.key`,
-`config/plugins/prompt-enhancer-hook.mjs`.
+`config/opencode.json`, `config/9router-merlin.key`.
 
 ## Related documentation
 

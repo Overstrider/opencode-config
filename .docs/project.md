@@ -2,14 +2,13 @@
 
 Documentation status: `verified`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Purpose
 
 Maintain a reproducible, user-global OpenCode configuration with pinned
-versions, remote model routing, prompt enhancement, persistent memory,
-codebase navigation, documentation audits, implementation policies, and
-permission defaults.
+versions, remote model routing, persistent memory, codebase navigation,
+documentation audits, implementation policies, and permission defaults.
 
 ## Architecture
 
@@ -18,8 +17,8 @@ permission defaults.
   plugins.
 - `merlin.loldinis.com` is the only OpenCode model gateway.
 - Primary models, GPT Sol High planning, and Qwen 3.7 Flash use the remote
-  9Router through their provider-native adapters. Qwen 3.7 Flash handles prompt
-  enhancement and claude-mem compression.
+  9Router through their provider-native adapters. Qwen 3.7 Flash handles
+  claude-mem compression.
 - User-level plugins enforce policy and coordinate external services.
 - Runtime data and secrets remain under user data directories outside Git.
 

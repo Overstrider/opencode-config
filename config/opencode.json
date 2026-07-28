@@ -359,7 +359,6 @@
     "./plugins/graphify.js",
     "./plugins/claude-mem-wrapper.mjs",
     "./plugins/claude-mem-autostart.mjs",
-    "./plugins/project-docs-hook.mjs",
-    "./plugins/prompt-enhancer-hook.mjs"
+    "./plugins/project-docs-hook.mjs"
   ]
 }

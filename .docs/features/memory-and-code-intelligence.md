@@ -2,7 +2,7 @@
 
 Status: `active`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Summary
 
@@ -16,8 +16,7 @@ is query-first when a graph exists. The MCP automatically indexes and watches
 projects. Its launcher detects the current session's project root and confines
 the MCP process to it with `CBM_ALLOWED_ROOT`; its protocol proxy independently
 rejects `index_repository` requests outside that exact root. Memory compression
-uses `qwen/qwen3.7-flash` through OpenRouter. The same model serves Prompt
-Enhancer through Merlin 9Router.
+uses `qwen/qwen3.7-flash` through OpenRouter.
 
 ## Requirements and invariants
 

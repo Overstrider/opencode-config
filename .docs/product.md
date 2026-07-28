@@ -2,7 +2,7 @@
 
 Documentation status: `verified`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Audience
 
@@ -22,7 +22,7 @@ behavior and integrations across projects and machines.
 - One versioned source controls the active global OpenCode configuration.
 - Install and update scripts restore pinned tools and integrations.
 - Primary build models and GPT Sol High planning route through Merlin 9Router;
-  Qwen 3.7 Flash handles prompt enhancement and memory compression.
+  Qwen 3.7 Flash handles memory compression.
 - Memory, structural indexing, graph navigation, and documentation auditing
   are available in every project.
 
@@ -44,4 +44,3 @@ behavior and integrations across projects and machines.
 - `opencode debug config` succeeds.
 - All repository tests pass.
 - Merlin 9Router and claude-mem health endpoints respond.
-- A normal root prompt receives prompt-enhancer metadata.

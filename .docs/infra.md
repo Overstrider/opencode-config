@@ -2,7 +2,7 @@
 
 Documentation status: `verified`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Environments
 
@@ -23,7 +23,7 @@ environment. Linux, macOS, and WSL use the Bash scripts but require separate
 ## External integrations
 
 - Merlin 9Router: all OpenCode model traffic, including GPT Sol High planning
-  and Qwen 3.7 Flash prompt enhancement.
+  and Qwen 3.7 Flash.
 - GitHub/npm/uv registries: installation and updates.
 - Provider upstreams remain behind Merlin 9Router.
 
