@@ -294,8 +294,8 @@
             }
           }
         },
-        "sakana/fugu-ultra-20260615": {
-          "name": "Fugu Ultra v1.0",
+        "sakana/fugu-ultra-v1.1": {
+          "name": "Fugu Ultra v1.1",
           "limit": {
             "context": 1000000,
             "output": 1000000

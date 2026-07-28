@@ -110,7 +110,7 @@ test('Sakana Fugu uses supported Responses reasoning variants', () => {
   assert.deepEqual(Object.keys(provider.models), [
     'sakana/fugu',
     'sakana/fugu-ultra',
-    'sakana/fugu-ultra-20260615',
+    'sakana/fugu-ultra-v1.1',
   ]);
   assert.deepEqual(Object.keys(provider.models['sakana/fugu'].variants), [
     'high',
