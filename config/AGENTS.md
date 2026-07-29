@@ -102,7 +102,9 @@ cross-file relationship question:
   non-trivial broad exploration. Exact-file reads for small direct changes are
   allowed.
 - Dirty graph output is expected and is never a reason to bypass Graphify.
-- After modifying code, run `graphify update .` when a graph exists.
+- After modifying code when a graph exists, launch
+  `node ~/.config/opencode/lib/graphify-update-async.mjs .`. The launcher must
+  return immediately; never run or await `graphify update .` synchronously.
 
 Only skip Graphify when the user explicitly says not to use it, the task is
 about stale/incorrect graph output, or indexing could expose secrets that have
