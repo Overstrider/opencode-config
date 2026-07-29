@@ -6,6 +6,16 @@
 
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ASYNC_UPDATE_LAUNCHER = fileURLToPath(
+  new URL('../lib/graphify-update-async.mjs', import.meta.url),
+);
+
+function updateInstruction() {
+  return `After code changes launch \`node ${JSON.stringify(ASYNC_UPDATE_LAUNCHER)} .\`. ` +
+    'It starts graphify update in a detached process; never run or wait for `graphify update .` synchronously.';
+}
 
 function graphPaths(directory) {
   const root = join(directory, 'graphify-out');
@@ -26,12 +36,12 @@ function systemPolicy(directory) {
         ? 'Use graphify-out/wiki/index.md for broad navigation. '
         : '') +
       'Read GRAPH_REPORT.md only for broad architecture context or when scoped queries are insufficient. ' +
-      'After code changes run graphify update . unless the user explicitly forbids Graphify or the task concerns stale/incorrect graph output.';
+      updateInstruction();
   }
 
   return 'GRAPHIFY IS THE OFFICIAL CODEBASE NAVIGATION METHOD. ' +
     'For non-trivial codebase exploration, architecture work, or relationship tracing, invoke the installed graphify skill to build graphify-out/ before broad raw-file searching. ' +
-    'Trivial direct edits may inspect the exact target first. Never expose secrets during indexing. After code changes keep an existing graph current with graphify update .';
+    `Trivial direct edits may inspect the exact target first. Never expose secrets during indexing. ${updateInstruction()}`;
 }
 
 export const GraphifyPlugin = async ({ directory = process.cwd() } = {}) => {
@@ -49,7 +59,7 @@ export const GraphifyPlugin = async ({ directory = process.cwd() } = {}) => {
       if (input?.tool !== 'bash' || !output?.args?.command) return;
 
       output.args.command =
-        'echo "[graphify] Use graphify query/path/explain before broad raw-file search; update graph after code changes." ; ' +
+        'echo "[graphify] Use graphify query/path/explain before broad raw-file search; launch the async graph update helper after code changes." ; ' +
         output.args.command;
       reminded = true;
     },

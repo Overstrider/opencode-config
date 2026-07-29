@@ -2,7 +2,7 @@
 
 Status: `active`
 
-Last verified: 2026-07-27
+Last verified: 2026-07-28
 
 ## Summary
 
@@ -13,7 +13,7 @@ and BYPASS removes OpenCode approval prompts.
 
 Plugins and global instructions reassert Ultra modes throughout session
 lifecycle. Permission entries and environment overrides allow all known tools.
-Cavecrew investigation uses GPT-5.6 Terra `low` through 9Router, review uses
+Cavecrew investigation uses GPT-5.6 Sol `low` through 9Router, review uses
 GPT-5.6 Sol `medium`, and the builder inherits the active session model. Any
 subagent that inherits `max` runs with the model's lowest configured variant.
 

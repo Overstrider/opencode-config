@@ -56,39 +56,6 @@ prevention, accessibility, hardware calibration, or an explicit requirement
 the user insists on. Ponytail controls what gets built; Caveman controls prose.
 <!-- ponytail-end -->
 
-<!-- prompt-enhancer-global-begin -->
-Prompt Enhancer is mandatory at user level for every human-authored root
-prompt. Its global skill is `prompt-enhancer`; load it when inspecting,
-testing, or changing the enhancer.
-
-Before the main model runs, the user-level plugin translates the current
-prompt into English and improves its clarity without changing intent, scope,
-authorization, constraints, examples, literals, or requested response
-language. The original prompt remains unchanged in visible OpenCode history;
-only the model-facing copy uses the enhanced text. Enhancing uses only the
-current message, plus attachment names and MIME types, never prior conversation
-content.
-
-The enhancer calls `https://merlin.loldinis.com/v1/chat/completions` directly
-with `openrouter/qwen/qwen3.7-flash`. Never create an OpenCode child session or
-agent, ask for model selection, race models, or chain fallbacks. Read the
-credential from ignored `config/9router-merlin.key`, with
-`NINEROUTER_MERLIN_API_KEY` as fallback; never place it in Git or logs. Use
-locally validated plain-text output.
-
-Enhancer attempts have a 5-second network-only ceiling. Its circuit breaker handles
-failures: transient failures back off from 60 seconds to 15 minutes; credit,
-quota, billing, and authorization failures back off from 15 minutes to 6
-hours. Provider `Retry-After` is honored. During cooldown, skip the call
-immediately. Failure sends the original prompt unchanged and displays a
-deduplicated warning; do not try a second model. Child, internal, synthetic,
-command-generated, and image-only messages are not enhanced.
-
-Prefix a prompt with `!raw` followed by whitespace to bypass enhancement. The
-complete original text, including `!raw`, remains visible in history; the main
-model receives only the content after the marker.
-<!-- prompt-enhancer-global-end -->
-
 <!-- project-docs-global-begin -->
 Project Docs is mandatory at user level for every workspace, session, and
 completed root response. Its global skill is `project-docs`; load it before
@@ -134,7 +101,9 @@ cross-file relationship question:
   non-trivial broad exploration. Exact-file reads for small direct changes are
   allowed.
 - Dirty graph output is expected and is never a reason to bypass Graphify.
-- After modifying code, run `graphify update .` when a graph exists.
+- After modifying code when a graph exists, launch
+  `node ~/.config/opencode/lib/graphify-update-async.mjs .`. The launcher must
+  return immediately; never run or await `graphify update .` synchronously.
 
 Only skip Graphify when the user explicitly says not to use it, the task is
 about stale/incorrect graph output, or indexing could expose secrets that have
@@ -149,8 +118,8 @@ Its worker and database live outside Git under `~/.claude-mem/`.
   credential from ignored `config/openrouter.key`, with
   `OPENROUTER_API_KEY` as fallback; do not duplicate it in settings. Tier
   routing is disabled and global agent concurrency is fixed at one.
-- Qwen 3.7 Flash serves Prompt Enhancer and claude-mem compression. Remove
-  legacy model overrides from `.env`; memory must remain on
+- Qwen 3.7 Flash serves claude-mem compression. Remove legacy model overrides
+  from `.env`; memory must remain on
   `qwen/qwen3.7-flash`.
 - At session start, use injected claude-mem context as historical evidence,
   then verify it against current code and Graphify before acting.

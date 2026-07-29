@@ -2,7 +2,7 @@
 
 Documentation status: `verified`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-28
 
 ## Configuration contract
 
@@ -28,7 +28,6 @@ Last verified: 2026-07-26
 - codebase-memory-mcp sets `CBM_ALLOWED_ROOT` to the detected project root and
   independently filters MCP indexing calls outside it. It refuses home,
   AppData, temporary, cache, filesystem-root, and unmarked roots.
-- Prompt enhancement has a five-second network ceiling and fails open.
 - Project Docs audits only completed root sessions and restricts writes to
   `.docs/**`.
 

@@ -37,8 +37,7 @@ o arquivo não existe.
 | --- | --- | --- |
 | OpenCode `1.18.5` | TUI e runtime principal | Node.js/npm |
 | 9Router | Gateway local para Claude, GPT e Kimi | Serviço em `127.0.0.1:20128` |
-| Qwen 3.7 Flash | Prompt Enhancer e compressor de memória | `config/openrouter.key` e internet |
-| Prompt Enhancer | Melhora prompts via Qwen antes do modelo principal | `config/openrouter.key` e internet |
+| Qwen 3.7 Flash | Compressor de memória | `config/openrouter.key` e internet |
 | claude-mem `13.12.4` | Memória entre sessões | Bun, OpenRouter e worker em `127.0.0.1:37778` |
 | Graphify `0.9.26` | Grafo navegável de cada codebase | `uv` e runtime Python |
 | codebase-memory-mcp `0.9.0` | Índice estrutural MCP com atualização automática | Node.js/npm |
@@ -58,7 +57,7 @@ Versões ficam pinadas em `.opencode-version`, `.graphify-version`,
   `mise.toml`.
 - Acesso à internet para instalar pacotes e chamar o OpenRouter.
 - Uma chave OpenRouter válida em `config/openrouter.key`, conforme o primeiro
-  passo. Ela é usada por Plan, Prompt Enhancer e claude-mem.
+  passo. Ela é usada por Plan e claude-mem.
 - 9Router instalado e com as contas desejadas configuradas. Todos os modelos
   principais dependem do gateway local em `http://127.0.0.1:20128/v1`.
 
@@ -210,48 +209,6 @@ Ponytail governa a implementação (YAGNI, reuso e menor mudança correta);
 Caveman governa a concisão da resposta. Nenhum deles reduz validação,
 segurança, prevenção de perda de dados ou requisitos explicitamente mantidos.
 
-## Prompt enhancer inicial
-
-A skill global `prompt-enhancer` e o plugin `prompt-enhancer-hook.mjs` melhoram
-automaticamente cada prompt humano da sessão raiz antes da chamada ao modelo
-principal. O texto original continua visível e intacto no histórico; uma cópia
-em inglês, mais clara e fiel, é guardada nos metadados da mensagem e usada
-somente na visão enviada ao modelo.
-
-O enhancer considera apenas a mensagem atual e nomes/tipos MIME de anexos. Ele
-preserva intenção, escopo, permissões, restrições, exemplos, código, comandos,
-caminhos, URLs, identificadores, números e o idioma solicitado para a resposta.
-Prompts simples continuam curtos; prompts complexos só recebem estrutura quando
-ela melhora a compreensão.
-
-O enhancer chama diretamente
-`https://openrouter.ai/api/v1/chat/completions` com
-`qwen/qwen3.6-35b-a3b:nitro`. Ele não cria sessão ou agente filho do OpenCode,
-não entra na fila de workspace e não faz seleção, corrida paralela ou fallback.
-A rota usa reasoning desativado, temperatura `0`, top-p `0.8` e nenhuma
-ferramenta. A saída é texto puro validado localmente. A credencial vem primeiro
-de `config/openrouter.key`, com `OPENROUTER_API_KEY` como fallback.
-
-Cada tentativa do enhancer tem teto de rede de 5 segundos e circuit breaker. Timeout,
-rede, `429`
-e erros de servidor iniciam backoff exponencial de 60 segundos até 15 minutos.
-Crédito, quota, billing e autorização iniciam em 15 minutos e chegam a 6
-horas. `Retry-After` do provider é respeitado. Durante cooldown, o modelo é
-pulado imediatamente; depois dele, uma única tentativa half-open verifica a
-recuperação. Falha envia o prompt original e mostra aviso deduplicado. Os
-agentes internos não possuem permissão para ferramentas. Nenhum segundo
-modelo é tentado na mesma mensagem.
-
-Quando um modelo Claude é selecionado como modelo principal, o mesmo endpoint
-é consultado antes do envio. Se o 9router já marcou a conta Claude como
-indisponível, o OpenCode troca imediatamente para GPT 5.6 Sol em `low`, sem
-fazer uma chamada Claude condenada a `429` e sem aguardar timeout.
-
-Use `!raw ` no início para desativar o enhancer em uma mensagem. O marcador
-permanece no histórico visível, mas o modelo recebe somente o conteúdo depois
-dele. Prompts de sessões filhas, comandos, mensagens sintéticas e mensagens
-somente com imagem são ignorados.
-
 ## Graphify como mapa oficial da codebase
 
 O [Graphify](https://github.com/Graphify-Labs/graphify) está instalado no
@@ -264,7 +221,9 @@ query-first obrigatório para exploração não trivial:
 - `graphify query "<pergunta>"` antes de grep/leitura ampla;
 - `graphify path "<A>" "<B>"` para relações;
 - `graphify explain "<conceito>"` para contexto focalizado;
-- `graphify update .` depois de mudanças quando já existe `graphify-out/`.
+- `node ~/.config/opencode/lib/graphify-update-async.mjs .` depois de mudanças
+  quando já existe `graphify-out/`; o launcher retorna imediatamente e atualiza
+  o grafo em um processo destacado.
 
 Cada projeto mantém seu próprio `graphify-out/`; bancos, relatórios e índices
 de codebase não entram neste repositório de configuração global.
@@ -282,7 +241,7 @@ desativado e o limite global de agentes é `1`, impedindo chamadas de compressã
 em paralelo. A credencial vem de `config/openrouter.key` ou do fallback
 `OPENROUTER_API_KEY`, sem duplicação no `settings.json`.
 
-Qwen 3.7 Flash é usado pelo Prompt Enhancer e pelo claude-mem. O setup remove
+Qwen 3.7 Flash é usado pelo claude-mem. O setup remove
 overrides antigos de modelo do `~/.claude-mem/.env`, garantindo que a memória
 permaneça em `qwen/qwen3.7-flash`.
 
@@ -358,10 +317,8 @@ Modelos visíveis atualmente:
 - Kimi K3 — `low`, `medium`, `high`, `max`
 - Haiku — `high` e `max` por orçamento nativo de thinking
 
-Use `Ctrl+T` na TUI para alternar a variante do modelo atual. O Prompt Enhancer
-usa `9router-qwen/openrouter/qwen/qwen3.7-flash`; esse provider lê
-`config/9router-merlin.key` e não interfere nos modelos principais do 9Router.
-O mesmo modelo comprime as observações do claude-mem.
+Use `Ctrl+T` na TUI para alternar a variante do modelo atual. Qwen 3.7 Flash
+comprime as observações do claude-mem.
 
 ## Instalação em uma nova máquina
 
@@ -453,7 +410,6 @@ Serviços esperados:
 | --- | --- | --- |
 | 9Router | `http://127.0.0.1:20128/v1/models` | HTTP `200` com catálogo de modelos |
 | claude-mem | `http://127.0.0.1:37778/api/health` | worker pronto com provider OpenRouter |
-| OpenRouter | Enviar um prompt comum no OpenCode | Prompt Enhancer grava `modelText` em inglês |
 
 No PowerShell:
 
@@ -468,10 +424,6 @@ No Bash:
 curl --fail http://127.0.0.1:20128/v1/models
 curl --fail http://127.0.0.1:37778/api/health
 ```
-
-O texto do Prompt Enhancer não substitui a mensagem visível. O histórico
-continua mostrando o original; somente a cópia enviada ao modelo fica em
-inglês. Use `!raw ` para testar o bypass intencional.
 
 ## Solução de problemas
 
@@ -501,14 +453,6 @@ Confirme `~/.claude-mem/settings.json`, porta `37778` e o endpoint
 `/api/health`. Rode novamente o setup de integrações para sincronizar a
 credencial e reiniciar o worker. Os wrappers removem BOM UTF-8 antes de ler o
 arquivo, evitando retorno silencioso à porta antiga `37777`.
-
-### Prompt Enhancer envia o texto original
-
-Confirme que `config/openrouter.key` contém somente a chave real. Se o arquivo
-não existir, confirme `OPENROUTER_API_KEY` no ambiente do processo.
-Timeout, rede, crédito, quota ou autorização ativam circuit breaker e enviam o
-original sem bloquear a conversa. Reiniciar durante o cooldown não corrige
-crédito ou autorização; valide a conta OpenRouter.
 
 ## Atualização
 

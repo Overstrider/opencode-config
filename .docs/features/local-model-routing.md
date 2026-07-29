@@ -42,8 +42,7 @@ request per provider family.
 
 ## Source map
 
-`config/opencode.json`, `config/9router-merlin.key`,
-`config/plugins/prompt-enhancer-hook.mjs`.
+`config/opencode.json`, `config/9router-merlin.key`.
 
 ## Related documentation
 

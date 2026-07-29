@@ -2,7 +2,7 @@
 
 Status: `active`
 
-Last verified: 2026-07-26
+Last verified: 2026-07-29
 
 ## Summary
 
@@ -16,8 +16,8 @@ is query-first when a graph exists. The MCP automatically indexes and watches
 projects. Its launcher detects the current session's project root and confines
 the MCP process to it with `CBM_ALLOWED_ROOT`; its protocol proxy independently
 rejects `index_repository` requests outside that exact root. Memory compression
-uses `qwen/qwen3.7-flash` through OpenRouter. The same model serves Prompt
-Enhancer through Merlin 9Router.
+uses `qwen/qwen3.7-flash` through OpenRouter. Graph updates launch in a detached
+process so response completion never waits for indexing.
 
 ## Requirements and invariants
 
@@ -33,8 +33,9 @@ per-project graph and MCP per-user structural cache.
 
 ## Interfaces and data
 
-claude-mem uses port 37778. Graphify writes `graphify-out/`.
-codebase-memory-mcp writes under the user cache.
+claude-mem uses port 37778. Graphify writes `graphify-out/`; its async launcher
+is `config/lib/graphify-update-async.mjs` and coalesces concurrent updates with
+a generated lock. codebase-memory-mcp writes under the user cache.
 
 ## Failures and edge cases
 
